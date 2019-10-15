@@ -1,0 +1,105 @@
+﻿@model List<StudentEvaluationToolWebApp.Models.UserModel>
+@using StudentEvaluationToolWebApp.Models;
+
+@{
+    ViewBag.Title = "Users";
+}
+
+<h2>Users</h2>
+
+
+<table id="tblUsers" class="display" style="width:100%">
+    
+    <thead>
+        <tr>
+            <th>
+                UserId
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Username
+            </th>
+            <th>
+                Password
+            </th>
+            <th>
+                Role
+            </th>
+            <th>
+                Administrator Operation
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (UserModel item in Model)
+        {
+            <tr>
+                <td>
+                    @item.UserID
+                </td>
+                <td>
+                    @item.FirstName @item.LastName
+                </td>
+                <td>
+                    @item.Username
+                </td>
+                <td>
+                    @item.Password
+                </td>
+                <td>
+                    @item.RoleName
+                </td>
+                <td>
+                    @Html.ActionLink("Change Role", "RoleChange", "Dashboard", new { iUserId = item.UserID }, null)
+                </td>
+            </tr>
+        }
+    </tbody>
+
+    <tfoot>
+        <tr>
+            <th>
+                UserId
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Username
+            </th>
+            <th>
+                Password
+            </th>
+            <th>
+                Role
+            </th>
+            <th>
+                Administrator Operation
+            </th>
+        </tr>
+    </tfoot>
+
+</table>
+
+
+
+
+
+@section scripts {
+
+    <script type="text/javascript" language="javascript">
+
+      
+        $(document).ready(function () {
+
+            $('#tblUsers').DataTable();
+
+        });
+
+
+    </script>
+
+}
