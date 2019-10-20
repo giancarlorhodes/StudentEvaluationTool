@@ -59,6 +59,34 @@
             return userModel;
         }
 
+        internal IList<CandidateModel> CandidateListToCandidateModelList(IList<Candidate> listOfCandidates)
+        {
+            List<CandidateModel> candidateModelList = new List<CandidateModel>();
+
+
+            foreach (var item in listOfCandidates)
+            {
+                CandidateModel candidateModel = new CandidateModel();
+                candidateModel.UserId = item.UserId;
+                candidateModel.CandidateId = item.CapstoneCandidateId;
+
+                candidateModel.CandidateFirstName = item.CandidateFirstName;
+                candidateModel.CandidateLastName = item.CandidateLastName;
+                candidateModel.LMSUserId = item.CandidateLMSUserId;
+                candidateModel.LMSGroupId = item.CandidateLMSGroupId;
+                candidateModel.LMSGroupName = item.CandidateLMSGroupName;
+                candidateModel.LMSCourseId = item.CandidateLMSCourseId;
+                candidateModel.CandidateActive = item.CandidateActiveFlag;
+                candidateModel.EvaluatorId = item.CapstoneEvaluatorId;
+                candidateModel.EvaluatorFirstName = item.EvaluatorFirstName;
+                candidateModel.EvaluatorFLastName = item.EvaluatorLastName;
+                candidateModel.EvaluatorActive = item.EvaluatorActiveFlag;
+                candidateModelList.Add(candidateModel);
+            }
+
+            return candidateModelList;
+        }
+
         internal ChangeRoleModel UserToChangeModel(User user)
         {
             ChangeRoleModel changeRoleModel = new ChangeRoleModel();

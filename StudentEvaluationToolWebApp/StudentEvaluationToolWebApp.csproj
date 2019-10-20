@@ -122,12 +122,14 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Common\Mapper.cs" />
     <Compile Include="Common\Utility.cs" />
+    <Compile Include="Controllers\EvaluationController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BaseModel.cs" />
+    <Compile Include="Models\CandidateModel.cs" />
     <Compile Include="Models\ChangeRoleModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -413,6 +415,7 @@
     <Content Include="Views\Shared\_Layout_Employee.cshtml" />
     <Content Include="Views\Shared\_Layout_Evaluator.cshtml" />
     <Content Include="Views\Dashboard\RoleChange.cshtml" />
+    <Content Include="Views\Evaluation\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

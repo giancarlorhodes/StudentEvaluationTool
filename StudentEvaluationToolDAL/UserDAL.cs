@@ -81,6 +81,87 @@
             return result;
         }
 
+        public Result GetCandidatesFromTheDatabase(int iUserId, int iRoleId)
+        {
+            IList<Candidate> listOfCandidates = new List<Candidate>();
+
+            try
+            {
+                // establish the connection 
+                using (SqlConnection conn = new SqlConnection(DbConnection))
+                {
+                    // create the command
+                    using (SqlCommand command = new SqlCommand("sp_GetActiveCandidatesByRoleAndUser", conn))
+                    {
+                        command.CommandType = System.Data.CommandType.StoredProcedure;
+                        command.CommandTimeout = 30;
+                        // do some work to call the stored procedure for adding
+                        command.Parameters.AddWithValue("@parm_UserId", SqlDbType.Int).Value = iUserId;
+                        command.Parameters.AddWithValue("@parm_RoleId", SqlDbType.Int).Value = iRoleId;
+
+                        conn.Open();
+
+                        // reader loop
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            // loop thru the resultset and create object and add to list
+                            while (reader.Read())
+                            {
+                                Candidate candidate = new Candidate();
+                                candidate.UserId = (int)reader["UserId"];
+                                candidate.CapstoneCandidateId = (int)reader["CapstoneCandidateId"];
+                                candidate.CandidateFirstName = reader["CandidateFirstName"].ToString();
+                                candidate.CandidateLastName = reader["CandidateLastName"].ToString();
+                                candidate.CandidateLMSUserId = (int)reader["CandidateLMSUserId"];
+                                candidate.CandidateLMSGroupId = (int)reader["CandidateLMSGroupId"];
+                                candidate.CandidateLMSGroupName = reader["CandidateLMSGroupName"].ToString();
+                                candidate.CandidateLMSCourseId = (int)reader["CandidateLMSCourseId"];
+                                candidate.CandidateActiveFlag = (int)reader["CandidateActiveFlag"];
+
+                                candidate.CapstoneEvaluatorId = (int)reader["CapstoneEvaluatorId"];
+                                candidate.EvaluatorFirstName = reader["EvaluatorFirstName"].ToString();
+                                candidate.EvaluatorLastName = reader["EvaluatorLastName"].ToString();
+                                candidate.EvaluatorJobTitle = reader["EvaluatorJobTitle"].ToString();
+                                candidate.EvaluatorActiveFlag = (int)reader["EvaluatorActiveFlag"];
+
+                                // add to list
+                                listOfCandidates.Add(candidate);
+                            }
+                        }
+                    }
+                    // close connection
+                    conn.Close();
+                    result.ListOfCandidates = listOfCandidates;
+                    //result.ListOfCandidates = this.FilterCandidatesByUserId(listOfCandidates, iUserId); ;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.ResultMessage = "";
+
+                ExceptionHandling exceptionHandling = new ExceptionHandling();
+
+                // log to file
+                exceptionHandling.WriteExceptionToFile(ex);
+
+                // log to database
+                exceptionHandling.WriteExceptionToDatabase(ex);
+            }
+
+            return result;
+        }
+
+        //private IList<Candidate> FilterCandidatesByUserId(IList<Candidate> listOfCandidates, int iUserId)
+        //{
+        //    int lCapstoneEvalutatorId = 0;
+
+
+        //    // TODO: 
+
+
+        //    return listOfCandidates.Where(c => c.CapstoneEvaluatorId == lCapstoneEvalutatorId).ToList();
+        //}
+
         public Result UpdateRoleInTheDatabase(User user)
         {
             try

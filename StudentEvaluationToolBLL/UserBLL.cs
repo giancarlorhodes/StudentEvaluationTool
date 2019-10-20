@@ -23,5 +23,13 @@
             result = userDAL.UpdateRoleInTheDatabase(user);
             return result;
         }
+
+        public Result FetchCandidates(int iUserId, int iRoleId)
+        {
+            Result result = new Result();
+            UserDAL userDAL = new UserDAL();
+            result = userDAL.GetCandidatesFromTheDatabase(iUserId, iRoleId);
+            return result;
+        }
     }
 }

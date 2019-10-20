@@ -1,10 +1,130 @@
-﻿@model StudentEvaluationToolWebApp.Models.UserModel
+﻿@model List<StudentEvaluationToolWebApp.Models.CandidateModel>
+@using StudentEvaluationToolWebApp.Models;
 
 @{
-    ViewBag.Title = "Landing";
+    ViewBag.Title = "Landing Page";
 }
 
-<h2>Landing</h2>
+<h2>Capstone Candidates</h2>
 
-@Html.DisplayFor(m => m.FirstName)
-@Html.DisplayFor(m => m.LastName)
+
+<table id="tblUsers" class="display" style="width:100%">
+
+    <thead>
+        <tr>
+            <th hidden="hidden">
+            </th>
+            <th hidden="hidden">
+            </th>
+            <th hidden="hidden">
+            </th>
+            <th>
+                Candidate Name
+            </th>
+            <th>
+                LMS Group Name
+            </th>
+            <th>
+                Evaluator Name
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+    @{
+        int counter = 0;
+        foreach (CandidateModel item in Model)
+        {
+
+        <tr>
+            <td hidden="hidden">
+                @Html.HiddenFor(m => m[counter].UserId)
+            </td>
+            <td hidden="hidden">
+                @Html.HiddenFor(m => m[counter].EvaluatorId)
+            </td>
+            <td hidden="hidden">
+                @Html.HiddenFor(m => m[counter].CandidateId)
+            </td>
+            <td>
+                @item.CandidateFirstName @item.CandidateLastName
+            </td>
+            <td>
+                @item.LMSGroupName
+            </td>
+            <td>
+                @item.EvaluatorFirstName @item.EvaluatorFLastName
+            </td>
+            <td>
+                @Html.ActionLink("View Only", "ViewOnly", "Evaluation", new {iCandidateId = item.CandidateId, iEvaluatorId = item.EvaluatorId, iUserId = item.UserId}, null)
+            </td>
+            <td>
+                @Html.ActionLink("Edit Evaluation", "EditEvaluation", "Evaluation", new {iCandidateId = item.CandidateId, iEvaluatorId = item.EvaluatorId, iUserId = item.UserId}, null)
+            </td>
+
+        </tr>
+            counter++;
+        }
+    }
+    </tbody>
+
+    <tfoot>
+        <tr>
+            <th hidden="hidden">
+            </th>
+            <th hidden="hidden">
+            </th>
+            <th hidden="hidden">
+            </th>
+            <th>
+                Candidate Name
+            </th>
+            <th>
+                LMS Group Name
+            </th>
+            <th>
+                Evaluator Name
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+        </tr>
+    </tfoot>
+
+</table>
+
+
+
+
+
+@section scripts {
+
+    <script type="text/javascript" language="javascript">
+
+
+        $(document).ready(function () {
+
+            //$('#tblUsers').DataTable();
+
+
+            $('#tblUsers').DataTable({
+
+
+                "columnDefs": [{ "orderable": false, "targets": 6 }, { "orderable": false, "targets": 7}]
+
+            });
+
+        });
+
+
+    </script>
+
+}
+
+
+

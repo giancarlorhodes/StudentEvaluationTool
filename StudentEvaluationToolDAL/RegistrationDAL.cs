@@ -59,6 +59,9 @@
                         command.ExecuteNonQuery();
 
                     }
+                    result.ResultType = ResultType.Success;
+                    result.ResultMessage = "User registration completed. Please log in.";
+
                     // close connection
                     conn.Close();
                 }
@@ -72,6 +75,10 @@
 
                 // log to database
                 exceptionHandling.WriteExceptionToDatabase(ex);
+
+
+                result.ResultType = ResultType.Failure;
+                result.ResultMessage = "User registration failed.";
             }
 
             return result;
@@ -97,6 +104,10 @@
                         command.CommandType = System.Data.CommandType.StoredProcedure;
                         command.CommandTimeout = 30;
 
+
+                        // do some work to call the stored procedure for adding
+                        command.Parameters.AddWithValue("@parmUserId", SqlDbType.Int).Value = 0; // this cause sp to return all users
+
                         conn.Open();
 
                         // reader loop
@@ -106,6 +117,7 @@
                             while (reader.Read())
                             {
                                 User userTemp = new User();
+                                userTemp.UserID = (int)reader["UserId"];
                                 userTemp.FirstName = reader["FirstName"].ToString();
                                 userTemp.LastName = reader["LastName"].ToString();
                                 userTemp.Username = reader["Username"].ToString();

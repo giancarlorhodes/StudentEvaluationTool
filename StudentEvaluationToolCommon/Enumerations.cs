@@ -9,7 +9,8 @@
     public enum ResultType
     {
         Failure = 0,
-        Success = 1       
+        Success = 1,
+        NOT_SET = 2
     }
 
     public enum RoleType

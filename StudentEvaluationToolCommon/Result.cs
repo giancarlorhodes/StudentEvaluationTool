@@ -7,6 +7,7 @@
     {
         public List<User> ListOfUsers { get; set; }
 
+        public IList<Candidate> ListOfCandidates { get; set; }
 
         public ResultType ResultType { get; set; }
 
@@ -15,6 +16,7 @@
         public Result() {
 
             ListOfUsers = new List<User>();
+            ListOfCandidates = new List<Candidate>();
             this.ResultType = ResultType.Failure;
         }
 

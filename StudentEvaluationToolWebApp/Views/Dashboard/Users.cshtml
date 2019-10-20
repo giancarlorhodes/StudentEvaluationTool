@@ -27,8 +27,7 @@
             <th>
                 Role
             </th>
-            <th>
-                Administrator Operation
+            <th>              
             </th>
         </tr>
     </thead>
@@ -77,7 +76,6 @@
                 Role
             </th>
             <th>
-                Administrator Operation
             </th>
         </tr>
     </tfoot>
@@ -95,7 +93,15 @@
       
         $(document).ready(function () {
 
-            $('#tblUsers').DataTable();
+            //$('#tblUsers').DataTable();
+
+
+            $('#tblUsers').DataTable({
+
+
+               "columnDefs": [{ "orderable": false, "targets": 5 }]
+
+            });
 
         });
 

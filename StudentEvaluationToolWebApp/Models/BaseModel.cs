@@ -12,6 +12,13 @@
 
         public string DialogMessage { get; set; }
 
+        public BaseModel()
+        {
+
+            DialogMessage = "";
+            DialogMessageType = ResultType.NOT_SET.ToString();
+
+        }
 
 
         public void ModifyDialog(Result result) {

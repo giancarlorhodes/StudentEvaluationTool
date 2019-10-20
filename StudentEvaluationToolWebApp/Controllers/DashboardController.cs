@@ -19,9 +19,39 @@
         }
 
         [HttpGet]
-        public ActionResult Landing(UserModel userModel)
+        public ActionResult Landing()
         {
-            return View(userModel);
+
+            IList<CandidateModel> candidateModel = new List<CandidateModel>();
+            //{ new CandidateModel { FirstName =  "Giancarlo", LastName = "Rhodes", CapstoneCandidateId = 100, LMSGroupName="Rhodes-Oct-19" },
+            //    new CandidateModel { FirstName =  "Kathy", LastName = "Rhodes", CapstoneCandidateId = 200,  LMSGroupName="Rhodes-Oct-19" },
+            //    new CandidateModel { FirstName =  "Kaden", LastName = "Rhodes", CapstoneCandidateId = 300,  LMSGroupName="Rhodes-Oct-19" }
+            //};
+
+
+            if (Session["UserSession"] != null)
+            {
+
+                // TODO: receive the candidate list and then filter if the user is a employee or evaluator, admin see all candidates
+                Result result = new Result();
+                Mapper mapper = new Mapper();
+                UserBLL userBLL = new UserBLL();
+
+
+                // fetch by userid
+                int iUserId = ((UserModel)Session["UserSession"]).UserID;
+                int iRoleId = ((UserModel)Session["UserSession"]).RoleID;
+                result = userBLL.FetchCandidates(iUserId, iRoleId);
+                candidateModel = mapper.CandidateListToCandidateModelList(result.ListOfCandidates);
+
+                return View(candidateModel);
+            }
+            else {
+
+                return RedirectToAction("Login", "Home");
+            
+            }
+
         }
 
 

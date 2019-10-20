@@ -21,13 +21,12 @@
         public string LastName { get; set; }
 
         [Required(ErrorMessage = "Username is required.")]
+        [StringLength(20, MinimumLength = 6, ErrorMessage = "User must be min of 6 character and max of 20 character.")]
         public string Username { get; set; }
 
         [Required(ErrorMessage = "Password is required.")]
         [StringLength(20, MinimumLength = 8, ErrorMessage = "Password must be min of 8 character and max of 20 character.")]
         [RegularExpression(".*[0-9][@#$%^&+=].*", ErrorMessage = "Password must have at least one number and one special character.")]
-
-
         public string Password { get; set; }
         public string Salt { get; set; }
         public int RoleID { get; set; }

@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Web;
     using System.Web.Mvc;
+    using System.Web.Security;
     using StudentEvaluationToolBLL;
     using StudentEvaluationToolCommon;
     using StudentEvaluationToolWebApp.Common;
@@ -18,6 +19,7 @@
     public class HomeController : Controller
     {
 
+        [HttpGet]
         public ActionResult Index()
         {
             return View();
@@ -57,6 +59,8 @@
                 RegistrationBLL registration = new RegistrationBLL();
                 // passed the mapped 
                 Result result = registration.Register(user);
+                userModel.DialogMessageType = result.ResultType.ToString();
+                userModel.DialogMessage = result.ResultMessage;
 
                 return View(userModel);
             }
@@ -72,7 +76,10 @@
             //ViewBag.Message = "Your application description page.";
             //ViewBag.Title = "Another Page";
 
-            return View();
+
+            UserModel model = new UserModel();
+
+            return View(model);
         }
 
 
@@ -103,8 +110,10 @@
                 userModel.FirstName = result.ListOfUsers[0].FirstName;
                 userModel.LastName = result.ListOfUsers[0].LastName;
                 userModel.RoleID = result.ListOfUsers[0].RoleID;
+                userModel.RoleName = result.ListOfUsers[0].RoleName;
+                userModel.UserID = result.ListOfUsers[0].UserID;
                 Session["UserSession"] = userModel;
-                return RedirectToAction("Landing", "Dashboard", userModel);
+                return RedirectToAction("Landing", "Dashboard");
             }
             else {
 
@@ -117,7 +126,8 @@
         public ActionResult LogOut()
         {
             // logout code
-
+            FormsAuthentication.SignOut();
+            Session.Abandon(); // it will clear the session at the end of request
 
 
             // go to the login

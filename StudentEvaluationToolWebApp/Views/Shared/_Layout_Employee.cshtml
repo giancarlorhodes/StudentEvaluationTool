@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using StudentEvaluationToolWebApp.Models;
+
+@{
+    UserModel currentUser = (UserModel)Session["UserSession"];
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -20,10 +26,11 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("Home", "Landing", "Dashboard")</li>
                     <li>@Html.ActionLink("Logout", "Logout", "Home")</li>
+                    <li><a href="#"> Welcome @currentUser.FirstName, Your Role is @currentUser.RoleName</a></li>
                 </ul>
-            </div>
+            </div>           
         </div>
     </div>
     <div class="container body-content">

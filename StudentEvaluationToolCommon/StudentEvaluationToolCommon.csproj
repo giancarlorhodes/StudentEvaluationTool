@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Candidate.cs" />
     <Compile Include="Enumerations.cs" />
     <Compile Include="Hash.cs" />
     <Compile Include="IHash.cs" />
