@@ -15,7 +15,7 @@
     {
 
         Result result = new Result();
-        string DbConnection = "Server=LAPTOP-1RTOL5OV\\SQLEXPRESS;Database=StudentEvaluation;Trusted_Connection=True;";
+        public string DbConnection = System.Configuration.ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString;
 
         public Result GetUserFromTheDatabase(int iUserId)
         {

@@ -17,62 +17,7 @@
 
 @using (Html.BeginForm("Register", "Home", FormMethod.Post))
 {
-    @*<table cellpadding="0" cellspacing="0">
-            <tr>
-                <th colspan="2" align="center">Register User Details</th>
-            </tr>
-            <tr>
-                <td>First Name: </td>
-                <td>
-                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
-                </td>
-                <td>
-                    @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "alert-danger" })
-                </td>
-            </tr>
-            <tr>
-                <td>Last Name: </td>
-                <td>
-                    @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
-                </td>
-                <td>
-                    @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "alert-danger" })
-                </td>
-            </tr>
-            <tr>
-                <td>Email: </td>
-                <td>
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                </td>
-                <td>
-                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "alert-danger" })
-                </td>
-            </tr>
-            <tr>
-                <td>Username: </td>
-                <td>
-                    @Html.TextBoxFor(m => m.Username, new { @class = "form-control" })
-                </td>
-                <td>
-                    @Html.ValidationMessageFor(m => m.Username, "", new { @class = "alert-danger" })
-                </td>
-            </tr>
-            <tr>
-                <td>Password: </td>
-                <td>
-                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control", placeholder = "Password", @type = "password" })
-                </td>
-                <td>
-                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "alert-danger" })
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td><input type="submit" value="Submit" class="btn btn-primary" />&nbsp;&nbsp;<input type="reset" value="Reset" onclick="ResetForm()" class="btn btn-primary" /></td>
-            </tr>
-        </table>*@
-
-
+   
 
     <form>
         <div class="form-group">

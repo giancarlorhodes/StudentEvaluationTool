@@ -1,0 +1,95 @@
+﻿@model StudentEvaluationToolWebApp.Models.QuestionModelList
+@using StudentEvaluationToolWebApp.Models;
+
+
+@{
+    ViewBag.Title = "Edit Evaluation";
+}
+
+<h2>Edit Evaluation</h2>
+<h3>Evaluation: @Model.ListOfQuestionModel[0].EvalName&nbsp; &nbsp;Class: @Model.ListOfQuestionModel[0].LMSGroupName</h3>
+<h3>Candidate: @Model.ListOfQuestionModel[0].CandidateName&nbsp; &nbsp;Evaluator: @Model.ListOfQuestionModel[0].EvaluatorName</h3>
+
+
+<div id="dialogSuccess" class="alert alert-success alert-dismissable" role="alert" hidden="hidden">
+    @Model.DialogMessage  <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+</div>
+<div id="dialogFailure" class="alert alert-danger alert-dismissable" role="alert" hidden="hidden">
+    @Model.DialogMessage  <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+</div>
+
+
+
+@using (Html.BeginForm("EditEvaluation", "Evaluation", FormMethod.Post))
+{
+
+<form>
+
+    @for (var i = 0; i < Model.ListOfQuestionModel.Count; i++)
+    {
+
+        <div class="panel panel-default">
+            <div class="panel-heading">@Model.ListOfQuestionModel[i].QuestionNumber.&nbsp;@Model.ListOfQuestionModel[i].QuestionText</div>
+            <div class="panel-body">
+                @Html.TextBoxFor(m => m.ListOfQuestionModel[i].ResultValue, new { @class = "form-control" })
+                Range of @Model.ListOfQuestionModel[i].RangeMin to @Model.ListOfQuestionModel[i].RangeMax
+            </div>
+        </div>
+
+        @Html.HiddenFor(m => Model.ListOfQuestionModel[i].CapstoneEvaluatorId)
+        @Html.HiddenFor(m => Model.ListOfQuestionModel[i].CapstoneCandidateId)
+        @Html.HiddenFor(m => Model.ListOfQuestionModel[i].UserIdEvaluator)
+        @Html.HiddenFor(m => Model.ListOfQuestionModel[i].CapstoneEvaluationResultId)
+        @Html.HiddenFor(m => Model.ListOfQuestionModel[i].EvalName)
+        @Html.HiddenFor(m => Model.ListOfQuestionModel[i].LMSGroupName)
+        @Html.HiddenFor(m => Model.ListOfQuestionModel[i].CandidateName)
+        @Html.HiddenFor(m => Model.ListOfQuestionModel[i].EvaluatorName)
+        @Html.HiddenFor(m => Model.ListOfQuestionModel[i].QuestionNumber)
+        @Html.HiddenFor(m => Model.ListOfQuestionModel[i].QuestionText)
+
+
+    }
+
+    <input type="submit" value="Submit" class="btn btn-primary" />&nbsp; &nbsp;<input type="reset" value="Reset" onclick="ResetForm()" class="btn btn-primary" />
+</form>
+
+}
+
+
+
+
+
+
+@section scripts {
+
+    <script type="text/javascript" language="javascript">
+
+
+        function ResetForm() {
+
+        }
+
+        $(document).ready(function () {
+
+
+
+            var SuccessOrFailure = @Html.Raw(Json.Encode(Model.DialogMessageType));
+
+
+            if (SuccessOrFailure === 'Success') {
+
+                $('#dialogSuccess').show();
+
+            }
+
+             if (SuccessOrFailure === 'Failure') {
+
+                $('#dialogFailure').show();
+
+            }
+
+        });
+
+    </script>
+
+}

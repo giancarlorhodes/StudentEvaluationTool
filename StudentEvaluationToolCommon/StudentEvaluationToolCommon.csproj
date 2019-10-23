@@ -45,6 +45,7 @@
     <Compile Include="Enumerations.cs" />
     <Compile Include="Hash.cs" />
     <Compile Include="IHash.cs" />
+    <Compile Include="Question.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

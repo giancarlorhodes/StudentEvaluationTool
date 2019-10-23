@@ -3,6 +3,7 @@
     using StudentEvaluationToolBLL;
     using StudentEvaluationToolCommon;
     using StudentEvaluationToolWebApp.Common;
+    using StudentEvaluationToolWebApp.Filter;
     using StudentEvaluationToolWebApp.Models;
     using System;
     using System.Collections.Generic;
@@ -13,49 +14,38 @@
     public class DashboardController : Controller
     {
         // GET: Dashboard
+        [MustBeLoggedIn]
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Landing");
         }
 
         [HttpGet]
+        [MustBeInRole(Roles = "Administrator, Evaluator, Employee")]
         public ActionResult Landing()
         {
 
             IList<CandidateModel> candidateModel = new List<CandidateModel>();
-            //{ new CandidateModel { FirstName =  "Giancarlo", LastName = "Rhodes", CapstoneCandidateId = 100, LMSGroupName="Rhodes-Oct-19" },
-            //    new CandidateModel { FirstName =  "Kathy", LastName = "Rhodes", CapstoneCandidateId = 200,  LMSGroupName="Rhodes-Oct-19" },
-            //    new CandidateModel { FirstName =  "Kaden", LastName = "Rhodes", CapstoneCandidateId = 300,  LMSGroupName="Rhodes-Oct-19" }
-            //};
+         
+            // TODO: receive the candidate list and then filter if the user is a employee or evaluator, admin see all candidates
+            Result result = new Result();
+            Mapper mapper = new Mapper();
+            UserBLL userBLL = new UserBLL();
 
 
-            if (Session["UserSession"] != null)
-            {
+            // fetch by userid
+            int iUserId = ((UserModel)Session["UserSession"]).UserID;
+            int iRoleId = ((UserModel)Session["UserSession"]).RoleID;
+            result = userBLL.FetchCandidates(iUserId, iRoleId);
+            candidateModel = mapper.CandidateListToCandidateModelList(result.ListOfCandidates);
 
-                // TODO: receive the candidate list and then filter if the user is a employee or evaluator, admin see all candidates
-                Result result = new Result();
-                Mapper mapper = new Mapper();
-                UserBLL userBLL = new UserBLL();
-
-
-                // fetch by userid
-                int iUserId = ((UserModel)Session["UserSession"]).UserID;
-                int iRoleId = ((UserModel)Session["UserSession"]).RoleID;
-                result = userBLL.FetchCandidates(iUserId, iRoleId);
-                candidateModel = mapper.CandidateListToCandidateModelList(result.ListOfCandidates);
-
-                return View(candidateModel);
-            }
-            else {
-
-                return RedirectToAction("Login", "Home");
-            
-            }
-
+            return View(candidateModel);
+           
         }
 
 
         [HttpGet]
+        [MustBeInRole(Roles = "Administrator")]
         public ActionResult Users()
         {
             Result result = new Result();
@@ -83,6 +73,7 @@
 
 
         [HttpGet]
+        [MustBeInRole(Roles = "Administrator")]
         public ActionResult RoleChange(int iUserId)
         {
 
@@ -117,15 +108,18 @@
                 return RedirectToAction("Logout", "Home");
 
             }
-
-           
+          
         }
 
 
 
         [HttpPost]
+        [MustBeInRole(Roles = "Administrator")]
         public ActionResult RoleChange(ChangeRoleModel iChangeRoleModel)
         {
+
+
+            // TODO: need to be able to associate user with candidate or evaluator
 
             ChangeRoleModel model = new ChangeRoleModel();
             Result result = new Result();

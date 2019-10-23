@@ -60,10 +60,10 @@
                 @item.EvaluatorFirstName @item.EvaluatorFLastName
             </td>
             <td>
-                @Html.ActionLink("View Only", "ViewOnly", "Evaluation", new {iCandidateId = item.CandidateId, iEvaluatorId = item.EvaluatorId, iUserId = item.UserId}, null)
+                @Html.ActionLink("View Only", "ViewOnly", "Evaluation", new {iCandidateId = item.CandidateId, iEvaluatorId = item.EvaluatorId, iUserIdEvaluator = item.UserId}, null)
             </td>
             <td>
-                @Html.ActionLink("Edit Evaluation", "EditEvaluation", "Evaluation", new {iCandidateId = item.CandidateId, iEvaluatorId = item.EvaluatorId, iUserId = item.UserId}, null)
+                @Html.ActionLink("Edit Evaluation", "EditEvaluation", "Evaluation", new {iCandidateId = item.CandidateId, iEvaluatorId = item.EvaluatorId, iUserIdEvaluator = item.UserId}, null)
             </td>
 
         </tr>
@@ -114,9 +114,7 @@
 
             $('#tblUsers').DataTable({
 
-
                 "columnDefs": [{ "orderable": false, "targets": 6 }, { "orderable": false, "targets": 7}]
-
             });
 
         });

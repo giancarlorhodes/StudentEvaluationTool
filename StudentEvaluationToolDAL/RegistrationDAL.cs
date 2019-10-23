@@ -12,17 +12,13 @@
     public class RegistrationDAL
     {
 
-        public Result result = new Result();
-        // public string DbConnection = "Server=LAPTOP-1RTOL5OV\\SQLEXPRESS;Database=StudentEvaluation;Trusted_Connection=True;";
-
+        public Result result = new Result();     
         public string DbConnection = System.Configuration.ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString;
 
 
         public Result CreateNewUser(User user)
         {
 
-
-            //var DbConnection = System.Configuration.ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString;
 
             try
             {
@@ -87,9 +83,7 @@
 
         public Result LoginAttempt(User user)
         {
-
-
-     
+   
             List<User> listOfUsers = new List<User>();
       
             try

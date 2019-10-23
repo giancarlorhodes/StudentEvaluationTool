@@ -29,7 +29,7 @@
 
         }
 
-        internal List<UserModel> UserListToUserModelList(List<User> listOfUsers)
+        internal List<UserModel> UserListToUserModelList(IList<User> listOfUsers)
         {
             List<UserModel> userModelsList = new List<UserModel>();
 
@@ -41,6 +41,75 @@
                 userModelsList.Add(userModel);
             }
             return userModelsList;
+        }
+
+        internal List<QuestionModel> QuestionListToQuestionModelList(IList<Question> listOfQuestionResult)
+        {
+            List<QuestionModel> list = new List<QuestionModel>();
+
+            foreach (var item in listOfQuestionResult)
+            {
+                QuestionModel questionModel = new QuestionModel();
+                questionModel = this.QuestionToQuestionModel(item);
+                list.Add(questionModel);
+            }
+            return list;
+        }
+
+        internal List<Question> ListOfQuestionModelToListofQuestion(List<QuestionModel> iQuestionModelList)
+        {
+            List<Question> list = new List<Question>();
+
+            foreach (var item in iQuestionModelList)
+            {
+                Question question = new Question();
+                question = this.QuestionModelToQuestion(item);
+                list.Add(question);
+            }
+
+            return list;
+        }
+
+        private Question QuestionModelToQuestion(QuestionModel item)
+        {
+            Question question = new Question();
+            question.CandidateName = item.CandidateName;
+            question.LMSGroupName = item.LMSGroupName;
+            question.CapstoneCandidateId = item.CapstoneCandidateId;
+            question.CapstoneEvaluationResultId = item.CapstoneEvaluationResultId;
+            question.CapstoneEvaluatorId = item.CapstoneEvaluatorId;
+            question.EvalName = item.EvalName;
+            question.EvaluatorName = item.EvaluatorName;
+            question.JobTitle = item.JobTitle;
+            question.QuestionNumber = item.QuestionNumber;
+            question.QuestionText = item.QuestionText;
+            question.RangeMax = item.RangeMax;
+            question.RangeMin = item.RangeMin;
+            question.ResultValue = item.ResultValue;
+            question.TypeShort = item.TypeShort;
+            question.UserIdEvaluator = item.UserIdEvaluator;
+            return question;
+        }
+
+        private QuestionModel QuestionToQuestionModel(Question item)
+        {
+            QuestionModel questionModel = new QuestionModel();
+            questionModel.CandidateName = item.CandidateName;
+            questionModel.LMSGroupName = item.LMSGroupName;
+            questionModel.CapstoneCandidateId = item.CapstoneCandidateId;
+            questionModel.CapstoneEvaluationResultId = item.CapstoneEvaluationResultId;
+            questionModel.CapstoneEvaluatorId = item.CapstoneEvaluatorId;
+            questionModel.EvalName = item.EvalName;
+            questionModel.EvaluatorName = item.EvaluatorName;
+            questionModel.JobTitle = item.JobTitle;
+            questionModel.QuestionNumber = item.QuestionNumber;
+            questionModel.QuestionText = item.QuestionText;
+            questionModel.RangeMax = item.RangeMax;
+            questionModel.RangeMin = item.RangeMin;
+            questionModel.ResultValue = item.ResultValue;
+            questionModel.TypeShort = item.TypeShort;
+            questionModel.UserIdEvaluator = item.UserIdEvaluator;
+            return questionModel;
         }
 
         private UserModel CommonUserToUserModel(User item)

@@ -9,6 +9,7 @@
     using StudentEvaluationToolBLL;
     using StudentEvaluationToolCommon;
     using StudentEvaluationToolWebApp.Common;
+    using StudentEvaluationToolWebApp.Filter;
     using StudentEvaluationToolWebApp.Models;
 
     /// <summary>
@@ -19,31 +20,34 @@
     public class HomeController : Controller
     {
 
-        [HttpGet]
+        [HttpGet]      
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Login");
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-            ViewBag.Title = "Contact About";
-            return View();
-        }
+        //public ActionResult About()
+        //{
+        //    ViewBag.Message = "Your application description page.";
+        //    ViewBag.Title = "Contact About";
+        //    return View();
+        //}
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-            ViewBag.Title = "Contact Page";
-            return View();
-        }
+        //public ActionResult Contact()
+        //{
+        //    ViewBag.Message = "Your contact page.";
+        //    ViewBag.Title = "Contact Page";
+        //    return View();
+        //}
 
         [HttpPost]
         public ActionResult Register(UserModel userModel)
         {
             //ViewBag.Message = "Your application description page.";
             //ViewBag.Title = "Another Page";
+
+
+            //TODO : need to prevent duplicate usernames
 
             if (ModelState.IsValid)
             {
@@ -92,6 +96,9 @@
         [HttpPost]
         public ActionResult Login(UserModel userModel)
         {
+
+            // TODO: need to dialog messsage for user or password incorrect.
+
             // need a mapper to go from UserModel to User (from common library)
             Mapper mapper = new Mapper();
 
@@ -112,17 +119,26 @@
                 userModel.RoleID = result.ListOfUsers[0].RoleID;
                 userModel.RoleName = result.ListOfUsers[0].RoleName;
                 userModel.UserID = result.ListOfUsers[0].UserID;
+                userModel.Username = result.ListOfUsers[0].Username;
                 Session["UserSession"] = userModel;
+
+
+                // Advanced Auth LMS
+                Session["AUTHUsername"] = result.ListOfUsers[0].Username;
+                Session["AUTHRoles"] = result.ListOfUsers[0].RoleName;
+
                 return RedirectToAction("Landing", "Dashboard");
             }
-            else {
-
+            else 
+            {
+                // TODO: error message wrong passsword or username
                 return View();
             }
             
         }
 
         [HttpGet]
+        [MustBeLoggedIn]
         public ActionResult LogOut()
         {
             // logout code
