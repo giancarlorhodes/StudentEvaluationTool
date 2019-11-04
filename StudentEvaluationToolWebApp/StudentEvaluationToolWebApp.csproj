@@ -133,6 +133,7 @@
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\CandidateModel.cs" />
     <Compile Include="Models\ChangeRoleModel.cs" />
+    <Compile Include="Models\ChartModel.cs" />
     <Compile Include="Models\QuestionListModel.cs" />
     <Compile Include="Models\QuestionModel.cs" />
     <Compile Include="Models\UserModel.cs" />
@@ -310,6 +311,8 @@
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\common.scss" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\Chart.js" />
+    <Content Include="Scripts\Chart.min.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap4.js" />
@@ -421,6 +424,10 @@
     <Content Include="Views\Dashboard\RoleChange.cshtml" />
     <Content Include="Views\Evaluation\Index.cshtml" />
     <Content Include="Views\Evaluation\EditEvaluation.cshtml" />
+    <Content Include="Views\Evaluation\ViewEvaluation.cshtml" />
+    <Content Include="Views\Dashboard\Chart.cshtml" />
+    <Content Include="Views\Dashboard\BarChartExample.cshtml" />
+    <Content Include="Views\Dashboard\RadarChartExample.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,5 +1,6 @@
 ﻿@model List<StudentEvaluationToolWebApp.Models.CandidateModel>
 @using StudentEvaluationToolWebApp.Models;
+@using StudentEvaluationToolCommon;
 
 @{
     ViewBag.Title = "Landing Page";
@@ -28,48 +29,52 @@
                 Evaluator Name
             </th>
             <th>
-            </th>
+            </th>          
+            @if (Session["AUTHRoles"].ToString() != RoleType.Employee.ToString())
+            {
             <th>
             </th>
+            }                
         </tr>
     </thead>
 
     <tbody>
-    @{
-        int counter = 0;
-        foreach (CandidateModel item in Model)
-        {
-
-        <tr>
-            <td hidden="hidden">
-                @Html.HiddenFor(m => m[counter].UserId)
-            </td>
-            <td hidden="hidden">
-                @Html.HiddenFor(m => m[counter].EvaluatorId)
-            </td>
-            <td hidden="hidden">
-                @Html.HiddenFor(m => m[counter].CandidateId)
-            </td>
-            <td>
-                @item.CandidateFirstName @item.CandidateLastName
-            </td>
-            <td>
-                @item.LMSGroupName
-            </td>
-            <td>
-                @item.EvaluatorFirstName @item.EvaluatorFLastName
-            </td>
-            <td>
-                @Html.ActionLink("View Only", "ViewOnly", "Evaluation", new {iCandidateId = item.CandidateId, iEvaluatorId = item.EvaluatorId, iUserIdEvaluator = item.UserId}, null)
-            </td>
-            <td>
-                @Html.ActionLink("Edit Evaluation", "EditEvaluation", "Evaluation", new {iCandidateId = item.CandidateId, iEvaluatorId = item.EvaluatorId, iUserIdEvaluator = item.UserId}, null)
-            </td>
-
-        </tr>
-            counter++;
+        @{
+            int counter = 0;
+            foreach (CandidateModel item in Model)
+            {
+                <tr>
+                    <td hidden="hidden">
+                        @Html.HiddenFor(m => m[counter].UserId)
+                    </td>
+                    <td hidden="hidden">
+                        @Html.HiddenFor(m => m[counter].EvaluatorId)
+                    </td>
+                    <td hidden="hidden">
+                        @Html.HiddenFor(m => m[counter].CandidateId)
+                    </td>
+                    <td>
+                        @item.CandidateFirstName @item.CandidateLastName
+                    </td>
+                    <td>
+                        @item.LMSGroupName
+                    </td>
+                    <td>
+                        @item.EvaluatorFirstName @item.EvaluatorFLastName
+                    </td>
+                    <td>
+                        @Html.ActionLink("View Only", "ViewEvaluation", "Evaluation", new { iCandidateId = item.CandidateId, iEvaluatorId = item.EvaluatorId, iUserIdEvaluator = item.UserId }, null)
+                    </td>
+                    @if (Session["AUTHRoles"].ToString() != RoleType.Employee.ToString())
+                    {
+                    <td>
+                        @Html.ActionLink("Edit Evaluation", "EditEvaluation", "Evaluation", new { iCandidateId = item.CandidateId, iEvaluatorId = item.EvaluatorId, iUserIdEvaluator = item.UserId }, null)
+                    </td>
+                    }
+                    </tr>
+                counter++;
+            }
         }
-    }
     </tbody>
 
     <tfoot>
@@ -91,9 +96,12 @@
             </th>
             <th>
             </th>
+            @if (Session["AUTHRoles"].ToString() != RoleType.Employee.ToString())
+            {
             <th>
             </th>
-        </tr>
+            }
+            </tr>
     </tfoot>
 
 </table>
@@ -114,7 +122,7 @@
 
             $('#tblUsers').DataTable({
 
-                "columnDefs": [{ "orderable": false, "targets": 6 }, { "orderable": false, "targets": 7}]
+                "columnDefs": [{ "orderable": false, "targets": 6 }, { "orderable": false, "targets": 7 }]
             });
 
         });

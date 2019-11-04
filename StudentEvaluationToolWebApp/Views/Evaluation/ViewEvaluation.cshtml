@@ -3,10 +3,10 @@
 
 
 @{
-    ViewBag.Title = "Edit Evaluation";
+    ViewBag.Title = "View Evaluation";
 }
 
-<h2>Edit Evaluation</h2>
+<h2>View Evaluation</h2>
 <h3>Evaluation: @Model.ListOfQuestionModel[0].EvalName&nbsp; &nbsp;Class: @Model.ListOfQuestionModel[0].LMSGroupName</h3>
 <h3>Candidate: @Model.ListOfQuestionModel[0].CandidateName&nbsp; &nbsp;Evaluator: @Model.ListOfQuestionModel[0].EvaluatorName</h3>
 
@@ -20,8 +20,6 @@
 
 
 
-@using (Html.BeginForm("EditEvaluation", "Evaluation", FormMethod.Post))
-{
 
 <form>
 
@@ -31,7 +29,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">@Model.ListOfQuestionModel[i].QuestionNumber.&nbsp;@Model.ListOfQuestionModel[i].QuestionText</div>
             <div class="panel-body">
-                @Html.TextBoxFor(m => m.ListOfQuestionModel[i].ResultValue, new { @class = "form-control" })
+                @Html.TextBoxFor(m => m.ListOfQuestionModel[i].ResultValue, new { @readonly = "readonly", @class = "form-control" })
                 Range of @Model.ListOfQuestionModel[i].RangeMin to @Model.ListOfQuestionModel[i].RangeMax
             </div>
         </div>
@@ -50,45 +48,7 @@
 
     }
 
-    <input type="submit" value="Submit" class="btn btn-primary" />&nbsp; &nbsp;<input type="reset" value="Reset" onclick="ResetForm()" class="btn btn-primary" />
+
 </form>
 
-}
 
-
-
-
-
-
-@section scripts {
-
-    <script type="text/javascript" language="javascript">
-
-
-        function ResetForm()
-        {
-
-        }
-
-        $(document).ready(function ()
-        {
-
-            var SuccessOrFailure = @Html.Raw(Json.Encode(Model.DialogMessageType));
-
-
-            if (SuccessOrFailure === 'Success') {
-
-                $('#dialogSuccess').show();
-
-            }
-
-             if (SuccessOrFailure === 'Failure') {
-
-                $('#dialogFailure').show();
-            }
-
-        });
-
-    </script>
-
-}

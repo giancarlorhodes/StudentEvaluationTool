@@ -1,0 +1,113 @@
+﻿
+@{
+    ViewBag.Title = "RadarChartExample";
+}
+
+<h2>RadarChartExample</h2>
+
+
+
+@using (Html.BeginForm("BuildRadarChartExample", "Dashboard", null, FormMethod.Post))
+{
+
+    <div Style="font-family: Corbel; font-size: small ;text-align:center " class="row">
+        <div>
+            <div style="width:100%;height:100%">
+                <div id="chartjs-radar">
+                    <canvas id="canvas" width="400" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div Style="font-family: Corbel; font-size: small ;text-align:center; " class="row">
+        <div>
+        </div>
+        <div>
+        </div>
+    </div>
+
+}
+
+
+@section scripts {
+
+
+    <script type="text/javascript" language="javascript">
+
+        
+         $(function () {
+            $.ajax({
+                url: "/Dashboard/BuildRadarChartExample",
+                method: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    var color = [
+                                "rgba(241,28,39,0.1)",
+                                "rgba(28,145,241,0.1)",
+                                "rgba(231,221,28,0.1)",
+                                "rgba(38,231,28,0.1)",
+                                "rgba(28,231,221,0.1)",
+                                "rgba(231,228,211,0.1)",
+                                "rgba(3,1,3,0.1)",
+                                "rgba(236,176,179,0.1)",
+                                "rgba(239,107,51,0.1)",
+                                "rgba(157,51,239,0.1)",
+                                "rgba(16,82,248,0.1)",
+                                "rgba(241,28,39,0.1)"];
+ 
+                    ChartData = {};
+                    ChartData.labels = data.labels;
+                    ChartData.datasets = [];
+                    for (index = 0; index < data.dataSets.length; index++) {
+                        ChartData.datasets.push({});
+                        dataset = ChartData.datasets[index];
+                        dataset.backgroundColor = color[index];
+                        dataset.borderColor = color[index];
+                        dataset.label = data.dataSets[index].label;
+                        dataset.data = [];
+                        ChartData.datasets[index].data = data.dataSets[index].data;
+                    }
+ 
+                    var ctx = $("#canvas");
+                    var options = {
+                        responsive: true,
+                        maintainAspectRadio: true,
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Chart.js Outcome Graph' },
+                        scale: { ticks: { beginAtZero: true} },
+                        tooltips: {
+                            enable: false,
+                            mode: 'label',
+                            callbacks: {
+                                label: function (tooltipItem, data) {
+                                    var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+                                    return datasetLabel + ' : ' + tooltipItem.yLabel;
+                                }
+                            }
+                        },
+                        scaleOverride: false,
+                        scaleSteps: 5,
+                        scaleStepWidth: 20,
+                        scaleStartValue: 100
+                    };
+ 
+                    var myRadar = new Chart(ctx, {
+                        type: 'radar',
+                        data: ChartData,
+                        options: options
+                    });
+                }                
+            });
+        });
+
+    </script>
+
+}
+
+
+
+            
+
+        
+

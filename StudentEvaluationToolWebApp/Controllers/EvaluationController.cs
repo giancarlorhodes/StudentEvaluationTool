@@ -15,7 +15,18 @@
         [HttpGet]
         public ActionResult ViewEvaluation(int iCandidateId, int iEvaluatorId, int iUserIdEvaluator)
         {
-            return View();
+            Result result = new Result();
+            Mapper mapper = new Mapper();
+            EvaluationBLL evalBLL = new EvaluationBLL();
+
+            // this will return all list of all the users in the database
+            result = evalBLL.GetQuestionsAndResults(iUserIdEvaluator, iCandidateId, iEvaluatorId);
+
+            // map it
+            QuestionModelList model = new QuestionModelList();
+            model.ListOfQuestionModel = mapper.QuestionListToQuestionModelList(result.ListOfQuestionResult);
+
+            return View(model);
         }
 
         [HttpGet]

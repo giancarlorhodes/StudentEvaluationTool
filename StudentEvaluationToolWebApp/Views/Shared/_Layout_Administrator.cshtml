@@ -22,13 +22,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Student Evaluation", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Student Evaluation", "Landing", "Dashboard", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Landing", "Dashboard")</li>
-                    <li>@Html.ActionLink("Reports", "Reports", "Dashboard")</li>
+                    <li>@Html.ActionLink("Charts", "Chart", "Dashboard")</li>                    
                     <li>@Html.ActionLink("Users", "Users", "Dashboard")</li>
+                    <li>@Html.ActionLink("Evaluators", "Evaluators", "Dashboard")</li>   
+                    <li>@Html.ActionLink("Candidates", "Candidates", "Dashboard")</li>
                     <li>@Html.ActionLink("Logout", "Logout", "Home")</li>
                     <li><a href="#"> Welcome @currentUser.FirstName, Your Role is @currentUser.RoleName</a></li>
                 </ul>

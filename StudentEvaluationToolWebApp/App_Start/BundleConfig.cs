@@ -11,7 +11,8 @@ namespace StudentEvaluationToolWebApp
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js",
                         "~/Scripts/site.js",
-                        "~/Scripts/DataTables/jquery.dataTables.js"));
+                        "~/Scripts/DataTables/jquery.dataTables.js",
+                        "~/Scripts/Chart.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
