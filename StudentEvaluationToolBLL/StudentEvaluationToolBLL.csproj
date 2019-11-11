@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChartBLL.cs" />
     <Compile Include="EvaluationBLL.cs" />
     <Compile Include="RegistrationBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -9,6 +9,8 @@
 
         public IList<Candidate> ListOfCandidates { get; set; }
 
+        public IList<Chart> ListOfCharts { get; set; }
+
         public ResultType ResultType { get; set; }
 
         public string ResultMessage { get; set; }

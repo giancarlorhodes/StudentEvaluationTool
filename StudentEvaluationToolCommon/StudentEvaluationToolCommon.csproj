@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Candidate.cs" />
+    <Compile Include="Chart.cs" />
     <Compile Include="Enumerations.cs" />
     <Compile Include="Hash.cs" />
     <Compile Include="IHash.cs" />

@@ -265,123 +265,169 @@
         }
 
 
-
         [HttpPost]
         public ActionResult BuildChart()
         {
 
+            // TESTING ONLY
+            string className = "MA-DEV-2019-JUN";
 
+            // get data from db
+            // assume we are only getting back data from single class 'MA-DEV-2019-JUN'
+            ChartBLL chartBLL = new ChartBLL();
+            List<Chart> chartData = chartBLL.GetChartData(className).ListOfCharts.ToList();
 
-            string[] typesOfData = new string[] { "Wonderlic Cognitive", "Wonderlic Motivation", "Wonderlic Personality", "Bootcamp Technical", 
-                                                        "Bootcamp Self-Learning", "Capstone Score" };
+            List<String> classNamesList = new List<string>();
+            classNamesList = BootCamp.BootCampNames;
+       
+
+            // get the types of data                        
+            //string[] typesOfData = new string[] { "Wonderlic Cognitive", "Wonderlic Motivation", "Wonderlic Personality", "Bootcamp Technical",
+            //                                            "Bootcamp Self-Learning", "Capstone Score" };
+            // get the distinct from PerformanceName
+            int countOfTypes = chartData.Select(m => m.PerformanceName).Distinct().Count();
+            string[] typesOfData = new string[countOfTypes];
+            List<string> dataNamesList = chartData.Select(m => m.PerformanceName).Distinct().ToList<string>();
+
+            // need to populate the array
+            int index = 0;
+            foreach (var item in dataNamesList)
+            {
+                typesOfData[index] = item;
+                index++;
+            }
+
+            // this will work much better now
             ChartModel chartModel = new ChartModel(typesOfData);
 
-            // Fetch the DataTable from DataBase.
-            System.Data.DataTable dt = new System.Data.DataTable();
-            dt.Columns.AddRange(new System.Data.DataColumn[3] { new System.Data.DataColumn("ChartId", typeof(int)), new System.Data.DataColumn("ChartFields", typeof(string)),
-                new System.Data.DataColumn("xaxisval",typeof(int)) });
-
-            /// TODO - database call
-            //dt.Rows.Add(1, "Prev year", 2);
-            //dt.Rows.Add(2, "Prev year", 3);
-            //dt.Rows.Add(3, "Prev year", 5);
-            //dt.Rows.Add(4, "Prev year", 7);
-            //dt.Rows.Add(5, "Prev year", 8);
-            //dt.Rows.Add(6, "Prev year", 9);
-            //dt.Rows.Add(7, "Current year", 1);
-            //dt.Rows.Add(8, "Current year", 3);
-            //dt.Rows.Add(9, "Current year", 5);
-            //dt.Rows.Add(10, "Current year", 7);
-            //dt.Rows.Add(11, "Current year", 8);
-            //dt.Rows.Add(12, "Current year", 9);
-            //dt.Rows.Add(13, "Final year", 1);
-            //dt.Rows.Add(14, "Final year", 3);
-            //dt.Rows.Add(15, "Final year", 5);
-            //dt.Rows.Add(16, "Final year", 7);
-            //dt.Rows.Add(17, "Final year", 8);
-            //dt.Rows.Add(18, "Final year", 9);
-
-            //dt.Rows.Add(1, "Wonderlic Cognitive", 80);
-            //dt.Rows.Add(1, "Wonderlic Motivation", 46);
-            //dt.Rows.Add(1, "Wonderlic Personality", 14);
-            //dt.Rows.Add(1, "Bootcamp Technical", 60);
-            //dt.Rows.Add(1, "Bootcamp Self-Learning", 60);
-            //dt.Rows.Add(1, "Capstone Score", 65);
-
-            //dt.Rows.Add(2, "Wonderlic Cognitive", 79);
-            //dt.Rows.Add(2, "Wonderlic Motivation", 79);
-            //dt.Rows.Add(2, "Wonderlic Personality", 89);
-            //dt.Rows.Add(2, "Bootcamp Technical", 76);
-            //dt.Rows.Add(2, "Bootcamp Self-Learning", 70);
-            //dt.Rows.Add(2, "Capstone Score", 90);
-
-            //chartModel.labels = (from p in dt.AsEnumerable() select p.Field<string>("ChartFields")).Distinct().ToArray();
-
-            // chartModel.labels = new string[] { "Wonderlic Cognitive",, "Wonderlic Motivation", "Wonderlic Personality",
-            // "Bootcamp Technical", "Bootcamp Self-Learning", "Capstone Score"};
-
-            // List<string> chartFields = (from p in dt.AsEnumerable() select p.Field<string>("ChartFields")).Distinct().ToList();
-
-            //List<string> candidates = new List<string>();
-            //candidates.Add("Student A");
-            //candidates.Add("Student B");
-            //candidates.Add("Student C");
-
+          
             RandomColorGenerator r = new RandomColorGenerator();
-
-           
-            string _s = r.RGBAString();
-
-            List<StudentEvaluationToolWebApp.Models.DataSets> lData = new List<DataSets>(3);
-
-            lData.Add(new DataSets { label = "Student A", data = new int[] { 80, 46, 14, 60, 60, 65 }, 
-                backgroundColor = new string[] { "transparent" }, borderColor = new string[] { "rgba(200,0,0,0.6)" }, pointBackgroundColor = "rgba(200,0,0,0.6)", 
-                pointBorderColor = "rgba(200,0,0,0.6)" });
-            lData.Add(new DataSets { label = "Student B", data = new int[] { 87, 23, 10, 69, 45, 69 }, 
-                backgroundColor = new string[] { "transparent" }, borderColor = new string[] { "rgba(0,0,200,0.6)" }, pointBackgroundColor = "rgba(0,0,200,0.6)", 
-                pointBorderColor = "rgba(0,0,200,0.6)" });
-            lData.Add(new DataSets { label = "Student C", data = new int[] { 45, 34, 34, 78, 45, 67 }, 
-                backgroundColor = new string[] { "transparent" }, borderColor = new string[] { _s }, pointBackgroundColor = _s, 
-                pointBorderColor = _s  });
+     
+            // this is number to students that will be the final chart
+            List<StudentEvaluationToolWebApp.Models.DataSets> lData = new List<DataSets>(chartData.Select(m => m.LMSUserId).Distinct().Count());
 
 
 
-
-
-
-
-            ////List<DataSets> dataSets = new List<DataSets>();
-            //foreach (string label in chartModel.labels)
+            // EXAMPLE DATA 
+            //lData.Add(new ChartDataSets
             //{
-            //    //int[] x = (from p in dt.AsEnumerable()
-            //    //           where p.Field<string>("ChartFields") == chartField
-            //    //           select p.Field<int>("xaxisval")).ToArray();
+            //    label = "Student A",
+            //    data = new int[] { 80, 46, 14, 60, 60, 65 },
+            //    backgroundColor = new string[] { "transparent" },
+            //    borderColor = new string[] { "rgba(200,0,0,0.6)" },
+            //    pointBackgroundColor = "rgba(200,0,0,0.6)",
+            //    pointBorderColor = "rgba(200,0,0,0.6)"
+            //});
 
-            //    int[] lData = new int[] { 80, 46, 14, 60, 60, 65 };
 
+            // make the datasets
+            List<int> distintStudentIds = chartData.Select(m => m.LMSUserId).Distinct().ToList<int>();
+            foreach (var lmsuserid in distintStudentIds)
+            {
 
-            //    dataSets.Add(new DataSets()
-            //    {
-            //        label = chartField,
-            //        data = lData,
-            //        borderWidth = "1"
-            //    });
-            //}
+                // need to filter out just to this student
+                List<Chart> chartStudentRows = chartData.Where(m => m.LMSUserId == lmsuserid).ToList();
+                Chart studentCurrent = chartStudentRows.FirstOrDefault();
+                string name = studentCurrent.FirstName + " " +  studentCurrent.LastName;
+                int[] studentData = new int[chartStudentRows.Count()]; // number of rows for data for this student
+                index = 0;
+                // add data to the array
+                foreach (var item in chartStudentRows)
+                {
+                    studentData[index] = Convert.ToInt32(item.ResultValue);
+                    index++;
+                }
+                // student data should now be complete
+
+                string studentColor = r.RGBAString();
+                DataSets chartDataSetsCurrentStudent = new DataSets
+                {
+                    label = name,
+                    data = studentData,
+                    backgroundColor = new string[] { "transparent" },
+                    borderColor = new string[] { studentColor },
+                    pointBackgroundColor = studentColor,
+                    pointBorderColor = studentColor
+                };
+
+                lData.Add(chartDataSetsCurrentStudent);
+
+            }
+                     
 
             chartModel.dataSets = lData;
             return Json(chartModel, JsonRequestBehavior.AllowGet);
-
-
         }
 
 
-
-            //TODO - candidates
-
-
-
-            // TODO - evaluators
+        //[HttpPost]
+        //public ActionResult BuildChart()
+        //{
 
 
-        }
+
+        //    string[] typesOfData = new string[] { "Wonderlic Cognitive", "Wonderlic Motivation", "Wonderlic Personality", "Bootcamp Technical",
+        //                                                "Bootcamp Self-Learning", "Capstone Score" };
+        //    ChartModel chartModel = new ChartModel(typesOfData);
+
+        //    //// Fetch the DataTable from DataBase.
+        //    //System.Data.DataTable dt = new System.Data.DataTable();
+        //    //dt.Columns.AddRange(new System.Data.DataColumn[3] { new System.Data.DataColumn("ChartId", typeof(int)), new System.Data.DataColumn("ChartFields", typeof(string)),
+        //    //    new System.Data.DataColumn("xaxisval",typeof(int)) });
+
+           
+
+        //    RandomColorGenerator r = new RandomColorGenerator();
+
+
+        //    string _s = r.RGBAString();
+
+        //    List<StudentEvaluationToolWebApp.Models.DataSets> lData = new List<DataSets>(3);
+
+        //    lData.Add(new DataSets
+        //    {
+        //        label = "Student A",
+        //        data = new int[] { 80, 46, 14, 60, 60, 65 },
+        //        backgroundColor = new string[] { "transparent" },
+        //        borderColor = new string[] { "rgba(200,0,0,0.6)" },
+        //        pointBackgroundColor = "rgba(200,0,0,0.6)",
+        //        pointBorderColor = "rgba(200,0,0,0.6)"
+        //    });
+        //    lData.Add(new DataSets
+        //    {
+        //        label = "Student B",
+        //        data = new int[] { 87, 23, 10, 69, 45, 69 },
+        //        backgroundColor = new string[] { "transparent" },
+        //        borderColor = new string[] { "rgba(0,0,200,0.6)" },
+        //        pointBackgroundColor = "rgba(0,0,200,0.6)",
+        //        pointBorderColor = "rgba(0,0,200,0.6)"
+        //    });
+        //    lData.Add(new DataSets
+        //    {
+        //        label = "Student C",
+        //        data = new int[] { 45, 34, 34, 78, 45, 67 },
+        //        backgroundColor = new string[] { "transparent" },
+        //        borderColor = new string[] { _s },
+        //        pointBackgroundColor = _s,
+        //        pointBorderColor = _s
+        //    });
+
+
+
+        //    chartModel.dataSets = lData;
+        //    return Json(chartModel, JsonRequestBehavior.AllowGet);
+
+
+        //}
+
+
+
+        //TODO - candidates
+
+
+
+        // TODO - evaluators
+
+
+    }
 }

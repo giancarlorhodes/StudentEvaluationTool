@@ -9,8 +9,8 @@ namespace StudentEvaluationToolWebApp.Models
     {
 
         public string[] labels { get; set; }
-        //public List<DataSets> dataSets { get; set; }
         public List<DataSets> dataSets { get; set; }
+
 
 
         public ChartModel(string[] iLabels) 

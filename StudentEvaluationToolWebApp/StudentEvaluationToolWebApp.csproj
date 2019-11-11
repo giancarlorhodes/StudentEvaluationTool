@@ -120,6 +120,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Common\BootCamp.cs" />
     <Compile Include="Common\Mapper.cs" />
     <Compile Include="Common\Utility.cs" />
     <Compile Include="Controllers\EvaluationController.cs" />
