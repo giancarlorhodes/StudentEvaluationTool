@@ -3,15 +3,26 @@
     using StudentEvaluationToolCommon;
     using StudentEvaluationToolDAL;
     using System;
+    using System.Configuration;
+    using System.Data;
+    using System.Data.SqlClient;
 
-    public class UserBLL
+    public class UserBLL : SqlServerDbContextBLL
     {
+
+        
+        public UserBLL() : base() 
+        {
+            base.Connection.Open();
+        }
+
 
         public Result FetchUsers(int iUserId)
         {
             Result result = new Result();
             UserDAL userDAL = new UserDAL();
-            result = userDAL.GetUserFromTheDatabase(iUserId);
+   
+            result = userDAL.GetUserFromTheDatabase(iUserId, base.Connection);
             return result;
 
         }
@@ -20,7 +31,7 @@
         {
             Result result = new Result();
             UserDAL userDAL = new UserDAL();
-            result = userDAL.UpdateRoleInTheDatabase(user);
+            result = userDAL.UpdateRoleInTheDatabase(user, base.Connection);
             return result;
         }
 
@@ -28,8 +39,17 @@
         {
             Result result = new Result();
             UserDAL userDAL = new UserDAL();
-            result = userDAL.GetCandidatesFromTheDatabase(iUserId, iRoleId);
+            result = userDAL.GetCandidatesFromTheDatabase(iUserId, iRoleId, base.Connection);
             return result;
         }
+
+        // destructor
+        ~UserBLL() 
+        {
+           base. Connection.Close();
+
+        }
+
+
     }
 }

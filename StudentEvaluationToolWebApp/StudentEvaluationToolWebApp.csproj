@@ -120,7 +120,6 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Common\BootCamp.cs" />
     <Compile Include="Common\Mapper.cs" />
     <Compile Include="Common\Utility.cs" />
     <Compile Include="Controllers\EvaluationController.cs" />
@@ -135,6 +134,7 @@
     <Compile Include="Models\CandidateModel.cs" />
     <Compile Include="Models\ChangeRoleModel.cs" />
     <Compile Include="Models\ChartModel.cs" />
+    <Compile Include="Models\ClassNameModel.cs" />
     <Compile Include="Models\QuestionListModel.cs" />
     <Compile Include="Models\QuestionModel.cs" />
     <Compile Include="Models\UserModel.cs" />

@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChartDAL.cs" />
+    <Compile Include="ContextDAL.cs" />
     <Compile Include="EvaluationDAL.cs" />
     <Compile Include="ExceptionHandling.cs" />
     <Compile Include="RegistrationDAL.cs" />

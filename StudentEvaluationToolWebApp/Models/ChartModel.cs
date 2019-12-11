@@ -1,7 +1,9 @@
-﻿using System;
+﻿using StudentEvaluationToolWebApp.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace StudentEvaluationToolWebApp.Models
 {
@@ -11,12 +13,13 @@ namespace StudentEvaluationToolWebApp.Models
         public string[] labels { get; set; }
         public List<DataSets> dataSets { get; set; }
 
-
-
+      
         public ChartModel(string[] iLabels) 
         {
             this.labels = iLabels;
             this.dataSets = new List<DataSets>();
+            
+
         }
 
         public ChartModel() { }

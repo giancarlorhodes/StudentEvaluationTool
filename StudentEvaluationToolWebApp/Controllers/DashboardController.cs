@@ -259,28 +259,26 @@
         //[MustBeInRole(Roles = "Administrator")]
         public ActionResult Chart()
         {
-
-            return View();
+            // populate the initial dropdown list
+            ClassNameModel model = new ClassNameModel();
+            return View(model);
 
         }
 
 
         [HttpPost]
-        public ActionResult BuildChart()
+        public ActionResult BuildChart(string iClassName)
         {
 
             // TESTING ONLY
-            string className = "MA-DEV-2019-JUN";
+            //string classname = "MA-DEV-2019-JUN";
+            string classname = iClassName;
 
             // get data from db
             // assume we are only getting back data from single class 'MA-DEV-2019-JUN'
             ChartBLL chartBLL = new ChartBLL();
-            List<Chart> chartData = chartBLL.GetChartData(className).ListOfCharts.ToList();
-
-            List<String> classNamesList = new List<string>();
-            classNamesList = BootCamp.BootCampNames;
-       
-
+            List<Chart> chartData = chartBLL.GetChartData(classname).ListOfCharts.ToList();
+         
             // get the types of data                        
             //string[] typesOfData = new string[] { "Wonderlic Cognitive", "Wonderlic Motivation", "Wonderlic Personality", "Bootcamp Technical",
             //                                            "Bootcamp Self-Learning", "Capstone Score" };
@@ -299,7 +297,7 @@
 
             // this will work much better now
             ChartModel chartModel = new ChartModel(typesOfData);
-
+           
           
             RandomColorGenerator r = new RandomColorGenerator();
      

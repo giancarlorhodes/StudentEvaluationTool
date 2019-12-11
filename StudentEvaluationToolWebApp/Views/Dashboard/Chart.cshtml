@@ -1,4 +1,7 @@
-﻿
+﻿@model StudentEvaluationToolWebApp.Models.ClassNameModel
+
+
+
 @{
     ViewBag.Title = "Chart";
 }
@@ -7,6 +10,12 @@
 
 @using (Html.BeginForm("BuildChart", "Dashboard", null, FormMethod.Post))
 {
+    <form>
+        <div class="form-group">
+            @Html.DropDownListFor(m => m.SelectedClassName, Model.ClassNames, new { @class = "form-control" })
+        </div>
+        @Html.HiddenFor(m => m.SelectedClassName)
+    </form>
 
 
     <div Style="font-family: Corbel; font-size: small ;text-align:center " class="row">
@@ -27,19 +36,25 @@
 }
 
 
-    @section scripts {
+@section scripts {
 
-        <script type="text/javascript" language="javascript">
+    <script type="text/javascript" language="javascript">
 
-           
-            $(document).ready(function () {
 
-                $.ajax({
-                url: "/Dashboard/BuildChart",
+
+        $("#SelectedClassName").change(function () {
+
+
+            // need to get the changed value
+
+
+            // ajax call here
+               $.ajax({
+                url: "/Dashboard/BuildChart?iClassName=" + this.value,
                 method: "POST",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                     success: function (data) {
+                success: function (data) {
 
                     //var color = [
                     //            "rgba(241,28,39,0.1)",
@@ -54,16 +69,16 @@
                     //            "rgba(157,51,239,0.1)",
                     //            "rgba(16,82,248,0.1)",
                     //            "rgba(241,28,39,0.1)"];
- 
-                    ChartData = {};                    
+
+                    ChartData = {};
                     ChartData.labels = data.labels;
-                        
+
                     ChartData.datasets = [];
                     for (index = 0; index < data.dataSets.length; index++) {
                         ChartData.datasets.push({});
                         dataset = ChartData.datasets[index];
                         dataset.backgroundColor = data.dataSets[index].backgroundColor; //color[index];
-                        dataset.borderColor = data.dataSets[index].borderColor; //color[index]; 
+                        dataset.borderColor = data.dataSets[index].borderColor; //color[index];
                         dataset.borderWidth = data.dataSets[index].borderWidth;
                         dataset.label = data.dataSets[index].label;
 
@@ -77,9 +92,9 @@
                         dataset.data = [];
                         ChartData.datasets[index].data = data.dataSets[index].data;
                     }
- 
+
                     var ctx = $("#canvas");
-                
+
 
                     var options = {
                         responsive: true,
@@ -88,7 +103,7 @@
                         //title: { display: true, text: 'Chart.js Outcome Graph' },
                         scale: {
                             ticks: { beginAtZero: true, min: 0, max: 100, stepSize: 10 },
-                        pointLabels: { fontSize: 18 }
+                            pointLabels: { fontSize: 18 }
                         },
                         tooltips: {
                             enable: false,
@@ -106,97 +121,107 @@
                         scaleStartValue: 100
                     };
 
- 
+
                     var myRadar = new Chart(ctx, {
                         type: 'radar',
                         data: ChartData,
                         options: options
                     });
-                }                
+                }
             });
 
 
 
 
-                //// https://code.tutsplus.com/tutorials/getting-started-with-chartjs-radar-and-polar-area-charts--cms-28444
-                //var canvas = document.getElementById("CandidatesChart");
+            //// https://code.tutsplus.com/tutorials/getting-started-with-chartjs-radar-and-polar-area-charts--cms-28444
+            //var canvas = document.getElementById("CandidatesChart");
 
-                //Chart.defaults.global.defaultFontFamily = "Lato";
-                //Chart.defaults.global.defaultFontSize = 18;
+            //Chart.defaults.global.defaultFontFamily = "Lato";
+            //Chart.defaults.global.defaultFontSize = 18;
 
-                //var iData = {
-                //    labels: ["Wonderlic Cognitive", "Wonderlic Motivation", "Wonderlic Personality",
-                //        "Bootcamp Technical", "Bootcamp Self-Learning", "Capstone Score"],
-                //    datasets: [
-                //        {
-                //        label: "Student A",
-                //        backgroundColor: "transparent",
-                //        borderColor: "rgba(200,0,0,0.6)",
-                //        fill: false,
-                //        radius: 6,
-                //        pointRadius: 6,
-                //        pointBorderWidth: 3,
-                //        pointBackgroundColor: "orange",
-                //        pointBorderColor: "rgba(200,0,0,0.6)",
-                //        pointHoverRadius: 10,
-                //        data: [65, 75, 70, 80, 60, 80]
-                //        },
-                //        {
-                //        label: "Student B",
-                //        backgroundColor: "transparent",
-                //        borderColor: "rgba(0,0,200,0.6)",
-                //        fill: false,
-                //        radius: 6,
-                //        pointRadius: 6,
-                //        pointBorderWidth: 3,
-                //        pointBackgroundColor: "rgba(0,0,200,0.6)",
-                //        pointBorderColor: "rgba(0,0,200,0.6)",
-                //        pointHoverRadius: 10,
-                //        data: [54, 65, 60, 70, 70, 75]
-                //        },
-                //        {
-                //        label: "Student C",
-                //        backgroundColor: "transparent",
-                //        borderColor: "rgba(159, 34, 20, 0.6)",
-                //        fill: false,
-                //        radius: 6,
-                //        pointRadius: 6,
-                //        pointBorderWidth: 3,
-                //        pointBackgroundColor: "rgba(159, 34, 20, 0.6)",
-                //        pointBorderColor: "rgba(159, 34, 20, 0.6)",
-                //        pointHoverRadius: 10,
-                //        data: [90, 10, 4, 75, 21, 75]
-                //        }]
-                //};
+            //var iData = {
+            //    labels: ["Wonderlic Cognitive", "Wonderlic Motivation", "Wonderlic Personality",
+            //        "Bootcamp Technical", "Bootcamp Self-Learning", "Capstone Score"],
+            //    datasets: [
+            //        {
+            //        label: "Student A",
+            //        backgroundColor: "transparent",
+            //        borderColor: "rgba(200,0,0,0.6)",
+            //        fill: false,
+            //        radius: 6,
+            //        pointRadius: 6,
+            //        pointBorderWidth: 3,
+            //        pointBackgroundColor: "orange",
+            //        pointBorderColor: "rgba(200,0,0,0.6)",
+            //        pointHoverRadius: 10,
+            //        data: [65, 75, 70, 80, 60, 80]
+            //        },
+            //        {
+            //        label: "Student B",
+            //        backgroundColor: "transparent",
+            //        borderColor: "rgba(0,0,200,0.6)",
+            //        fill: false,
+            //        radius: 6,
+            //        pointRadius: 6,
+            //        pointBorderWidth: 3,
+            //        pointBackgroundColor: "rgba(0,0,200,0.6)",
+            //        pointBorderColor: "rgba(0,0,200,0.6)",
+            //        pointHoverRadius: 10,
+            //        data: [54, 65, 60, 70, 70, 75]
+            //        },
+            //        {
+            //        label: "Student C",
+            //        backgroundColor: "transparent",
+            //        borderColor: "rgba(159, 34, 20, 0.6)",
+            //        fill: false,
+            //        radius: 6,
+            //        pointRadius: 6,
+            //        pointBorderWidth: 3,
+            //        pointBackgroundColor: "rgba(159, 34, 20, 0.6)",
+            //        pointBorderColor: "rgba(159, 34, 20, 0.6)",
+            //        pointHoverRadius: 10,
+            //        data: [90, 10, 4, 75, 21, 75]
+            //        }]
+            //};
 
-                //var chartOptions = {
-                //  scale: {
-                //    ticks: {
-                //      beginAtZero: true,
-                //      min: 0,
-                //      max: 100,
-                //      stepSize: 20
-                //    },
-                //    pointLabels: {
-                //      fontSize: 18
-                //    }
-                //  },
-                //  legend: {
-                //    position: 'left'
-                //  }
-                //};
+            //var chartOptions = {
+            //  scale: {
+            //    ticks: {
+            //      beginAtZero: true,
+            //      min: 0,
+            //      max: 100,
+            //      stepSize: 20
+            //    },
+            //    pointLabels: {
+            //      fontSize: 18
+            //    }
+            //  },
+            //  legend: {
+            //    position: 'left'
+            //  }
+            //};
 
-                //var radarChart = new Chart(canvas, {
-                //  type: 'radar',
-                //  data: iData,
-                //  options: chartOptions
-                //});
-
-
+            //var radarChart = new Chart(canvas, {
+            //  type: 'radar',
+            //  data: iData,
+            //  options: chartOptions
+            //});
 
 
 
-            });
 
-        </script>
-    }
+
+
+        });
+
+
+        $(document).ready(function () {
+
+         
+           // $('#SelectedClassName').val('MA-DEV-2019-JUN');
+            $("#SelectedClassName option[value='MA-DEV-2019-JUN']").attr("selected", "selected");
+
+        });
+
+    </script>
+}
