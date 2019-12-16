@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChartBLL.cs" />
-    <Compile Include="SqlServerDbContextBLL.cs" />
+    <Compile Include="DbContextBLL.cs" />
     <Compile Include="EvaluationBLL.cs" />
     <Compile Include="RegistrationBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

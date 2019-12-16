@@ -2,44 +2,33 @@
 {
     using StudentEvaluationToolCommon;
     using StudentEvaluationToolDAL;
-    using System;
-    using System.Configuration;
-    using System.Data;
-    using System.Data.SqlClient;
 
-    public class UserBLL : SqlServerDbContextBLL
+    public class UserBLL : DbContextBLL
     {
-
-        
+        public UserDAL UserDAL { get; set; }
+       
+        // constructor - base will be called first, then the subtype
         public UserBLL() : base() 
         {
+            UserDAL = new UserDAL(base.Connection);
             base.Connection.Open();
         }
 
-
         public Result FetchUsers(int iUserId)
         {
-            Result result = new Result();
-            UserDAL userDAL = new UserDAL();
-   
-            result = userDAL.GetUserFromTheDatabase(iUserId, base.Connection);
+            Result result = UserDAL.GetUserFromTheDatabase(iUserId);
             return result;
-
         }
 
         public Result UpdateRole(User user)
         {
-            Result result = new Result();
-            UserDAL userDAL = new UserDAL();
-            result = userDAL.UpdateRoleInTheDatabase(user, base.Connection);
+            Result result = UserDAL.UpdateRoleInTheDatabase(user);
             return result;
         }
 
         public Result FetchCandidates(int iUserId, int iRoleId)
         {
-            Result result = new Result();
-            UserDAL userDAL = new UserDAL();
-            result = userDAL.GetCandidatesFromTheDatabase(iUserId, iRoleId, base.Connection);
+            Result result = UserDAL.GetCandidatesFromTheDatabase(iUserId, iRoleId);
             return result;
         }
 
@@ -47,7 +36,6 @@
         ~UserBLL() 
         {
            base. Connection.Close();
-
         }
 
 

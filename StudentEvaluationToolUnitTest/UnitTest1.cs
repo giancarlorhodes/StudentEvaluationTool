@@ -7,8 +7,17 @@ namespace StudentEvaluationToolUnitTest
     public class UnitTest1
     {
         [TestMethod]
-        public void TestMethod1()
+        public void Faster_By_100X()
         {
+            // arrange
+
+
+            // act
+
+
+            // assert
+
+
         }
     }
 }

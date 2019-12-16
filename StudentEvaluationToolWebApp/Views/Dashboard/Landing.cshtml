@@ -29,12 +29,12 @@
                 Evaluator Name
             </th>
             <th>
-            </th>          
-            @if (Session["AUTHRoles"].ToString() != RoleType.Employee.ToString())
+            </th>       
+            @if (!User.IsInRole(RoleType.Employee.ToString()))
             {
-            <th>
-            </th>
-            }                
+                <th>
+                </th>
+            }
         </tr>
     </thead>
 

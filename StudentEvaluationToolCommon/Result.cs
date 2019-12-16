@@ -21,7 +21,7 @@
             ListOfUsers = new List<User>();
             ListOfCandidates = new List<Candidate>();
             ListOfQuestionResult = new List<Question>();
-            this.ResultType = ResultType.Failure;
+            this.ResultType = ResultType.NOT_SET;
         }
 
     }
