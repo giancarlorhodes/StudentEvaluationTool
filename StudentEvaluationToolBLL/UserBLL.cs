@@ -13,12 +13,15 @@
             UserDAL = new UserDAL(base.Connection);
             base.Connection.Open();
         }
+        
 
         public Result FetchUsers(int iUserId)
         {
             Result result = UserDAL.GetUserFromTheDatabase(iUserId);
             return result;
         }
+
+      
 
         public Result UpdateRole(User user)
         {

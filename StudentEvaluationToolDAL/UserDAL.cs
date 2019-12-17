@@ -108,6 +108,8 @@
             return result;
         }
 
+
+
         public Result GetCandidatesFromTheDatabase(int iUserId, int iRoleId)
         {
             IList<Candidate> listOfCandidates = new List<Candidate>();

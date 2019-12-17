@@ -21,7 +21,10 @@
             Connection = new SqlConnection(); 
             Connection.ConnectionString = ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString;
         }
-    
+
+
+      
+
         public void Dispose()
         {
             //this stuff takes a lot of resources and should be disposed of correctly. 

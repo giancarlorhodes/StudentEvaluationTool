@@ -46,7 +46,6 @@
     <Compile Include="ContextDAL.cs" />
     <Compile Include="EvaluationDAL.cs" />
     <Compile Include="ExceptionHandling.cs" />
-    <Compile Include="IUserDAL.cs" />
     <Compile Include="RegistrationDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserDAL.cs" />
