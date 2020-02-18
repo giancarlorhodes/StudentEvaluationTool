@@ -8,7 +8,7 @@
     public class UserDAL 
     {
 
-        public Result result = new Result();
+        public Result result = new Result(); // TODO: create an base result class and build other result classes that inherit from that
         private IDbConnection _connection;
         private ExceptionHandling _exceptionHandling;
 
@@ -123,8 +123,7 @@
             IList<Candidate> listOfCandidates = new List<Candidate>();
 
             try
-            {
-
+            {             
                 // create the command
                 using (IDbCommand command = this._connection.CreateCommand())
                 {
@@ -150,27 +149,45 @@
                     _connection.Open();
 
                     // reader loop
-                    using (IDataReader reader = command.ExecuteReader())
+                    using (IDataReader _reader = command.ExecuteReader())
                     {
+                        int _userIDPosition = _reader.GetOrdinal("UserId");
+                        int _capstoneCandidateIdPosition = _reader.GetOrdinal("CapstoneCandidateId");
+                        int _candidateFirstNamePosition = _reader.GetOrdinal("CandidateFirstName");
+
+                        int _candidateLastNamePosition = _reader.GetOrdinal("CandidateLastName");
+                        int _candidateLMSUserIdPosition = _reader.GetOrdinal("CandidateLMSUserId");
+                        int _candidateLMSGroupIdPosition = _reader.GetOrdinal("CandidateLMSGroupId");
+                        int _candidateLMSGroupNamePostion = _reader.GetOrdinal("CandidateLMSGroupName");
+                        int _candidateLMSCourseIdPostion = _reader.GetOrdinal("CandidateLMSCourseId");
+                        int _candidateActiveFlagPosition = _reader.GetOrdinal("CandidateActiveFlag");
+
+                        int _capstoneEvaluatorIdPosition = _reader.GetOrdinal("CapstoneEvaluatorId");
+                        int _evaluatorFirstNamePostion = _reader.GetOrdinal("EvaluatorFirstName");
+                        int _evaluatorLastNamePosition = _reader.GetOrdinal("EvaluatorLastName");
+                        int _evaluatorJobTitlePosition = _reader.GetOrdinal("EvaluatorJobTitle");
+                        int _evaluatorActiveFlagPostion = _reader.GetOrdinal("EvaluatorActiveFlag");
+
+
                         // loop thru the resultset and create object and add to list
-                        while (reader.Read())
+                        while (_reader.Read())
                         {
                             Candidate candidate = new Candidate();
-                            candidate.UserId = (int)reader["UserId"];
-                            candidate.CapstoneCandidateId = (int)reader["CapstoneCandidateId"];
-                            candidate.CandidateFirstName = reader["CandidateFirstName"].ToString();
-                            candidate.CandidateLastName = reader["CandidateLastName"].ToString();
-                            candidate.CandidateLMSUserId = (int)reader["CandidateLMSUserId"];
-                            candidate.CandidateLMSGroupId = (int)reader["CandidateLMSGroupId"];
-                            candidate.CandidateLMSGroupName = reader["CandidateLMSGroupName"].ToString();
-                            candidate.CandidateLMSCourseId = (int)reader["CandidateLMSCourseId"];
-                            candidate.CandidateActiveFlag = (int)reader["CandidateActiveFlag"];
+                            candidate.UserId = _reader.GetInt32(_userIDPosition);
+                            candidate.CapstoneCandidateId = _reader.GetInt32(_capstoneCandidateIdPosition);
+                            candidate.CandidateFirstName = _reader.GetString(_candidateFirstNamePosition);
+                            candidate.CandidateLastName = _reader.GetString(_candidateLastNamePosition);
+                            candidate.CandidateLMSUserId = _reader.GetInt32(_candidateLMSUserIdPosition);
+                            candidate.CandidateLMSGroupId = _reader.GetInt32(_candidateLMSGroupIdPosition);
+                            candidate.CandidateLMSGroupName = _reader.GetString(_candidateLMSGroupNamePostion);
+                            candidate.CandidateLMSCourseId = _reader.GetInt32(_candidateLMSCourseIdPostion);
+                            candidate.CandidateActiveFlag = _reader.GetInt32(_candidateActiveFlagPosition);
 
-                            candidate.CapstoneEvaluatorId = (int)reader["CapstoneEvaluatorId"];
-                            candidate.EvaluatorFirstName = reader["EvaluatorFirstName"].ToString();
-                            candidate.EvaluatorLastName = reader["EvaluatorLastName"].ToString();
-                            candidate.EvaluatorJobTitle = reader["EvaluatorJobTitle"].ToString();
-                            candidate.EvaluatorActiveFlag = (int)reader["EvaluatorActiveFlag"];
+                            candidate.CapstoneEvaluatorId = _reader.GetInt32(_capstoneEvaluatorIdPosition);
+                            candidate.EvaluatorFirstName = _reader.GetString(_evaluatorFirstNamePostion);
+                            candidate.EvaluatorLastName = _reader.GetString(_evaluatorLastNamePosition);
+                            candidate.EvaluatorJobTitle = _reader.GetString(_evaluatorJobTitlePosition);
+                            candidate.EvaluatorActiveFlag = _reader.GetInt32(_evaluatorActiveFlagPostion);
 
                             // add to list
                             listOfCandidates.Add(candidate);
@@ -199,7 +216,7 @@
             return result;
         }
 
-        public Result UpdateRoleInTheDatabase(User iUser)
+        public Result UpdateRoleInTheDatabase(User inUser)
         {
             try
             {
@@ -215,18 +232,16 @@
                     command.CommandText = "sp_UpdateUserRole";
 
                     // do some work to call the stored procedure for adding
-                    //command.Parameters.AddWithValue("@parmUserId", SqlDbType.Int).Value = user.UserID;
-                    //command.Parameters.AddWithValue("@parmRoleId", SqlDbType.Int).Value = user.RoleID;
                     IDbDataParameter parmUserId = command.CreateParameter();
                     parmUserId.DbType = DbType.Int32;
                     parmUserId.ParameterName = "@parmUserId";
-                    parmUserId.Value = iUser.UserID;
+                    parmUserId.Value = inUser.UserID;
                     command.Parameters.Add(parmUserId);
 
                     IDbDataParameter parmRoleId = command.CreateParameter();
                     parmRoleId.DbType = DbType.Int32;
                     parmRoleId.ParameterName = "@parmRoleId";
-                    parmRoleId.Value = iUser.RoleID;
+                    parmRoleId.Value = inUser.RoleID;
                     command.Parameters.Add(parmRoleId);
 
                     // call the non query to execute the stored procedure
