@@ -9,7 +9,7 @@
     {
 
         private IDbConnection _connection;
-        public IDbConnection Connection { get => _connection; set => _connection = value; }
+        //public IDbConnection Connection { get => _connection; set => _connection = value; }
 
         // default constructor
         public DbContextBLL()
@@ -18,8 +18,18 @@
             // this  line would have to changes if the DB tyes where changes SQL SERVER ---> ORACLE as an example
             // we could pass this dependancy up the chain, introduce the bootstrapper technique, and finally a
             // DI container
-            Connection = new SqlConnection(); 
-            Connection.ConnectionString = ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString;
+
+
+            // OLD REMOVE
+            //Connection = new SqlConnection(); 
+            //Connection.ConnectionString = ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString;
+        }
+
+
+        public DbContextBLL(IDbConnection inConnection) 
+        {
+            this._connection = inConnection;
+        
         }
 
 

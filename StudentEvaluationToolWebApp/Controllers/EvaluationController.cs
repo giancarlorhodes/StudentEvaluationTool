@@ -10,38 +10,55 @@
     using System.Web;
     using System.Web.Mvc;
 
-    public class EvaluationController : Controller
+    public class EvaluationController : BaseController
     {
+
+        // fields
+        private EvaluationBLL _evaluation;
+        private Mapper _mapper;
+
+
+
+        public EvaluationController()
+        {
+
+            // create BLL object for registration process
+            _evaluation = new EvaluationBLL(base.Connection);
+            _mapper = new Mapper();
+        }
+
+
+
+
+
         [HttpGet]
         public ActionResult ViewEvaluation(int iCandidateId, int iEvaluatorId, int iUserIdEvaluator)
         {
             Result result = new Result();
-            Mapper mapper = new Mapper();
-            EvaluationBLL evalBLL = new EvaluationBLL();
+
 
             // this will return all list of all the users in the database
-            result = evalBLL.GetQuestionsAndResults(iUserIdEvaluator, iCandidateId, iEvaluatorId);
+            result = _evaluation.GetQuestionsAndResults(iUserIdEvaluator, iCandidateId, iEvaluatorId);
 
             // map it
             QuestionModelList model = new QuestionModelList();
-            model.ListOfQuestionModel = mapper.QuestionListToQuestionModelList(result.ListOfQuestionResult);
+            model.ListOfQuestionModel = _mapper.QuestionListToQuestionModelList(result.ListOfQuestionResult);
 
             return View(model);
         }
+
 
         [HttpGet]
         public ActionResult EditEvaluation(int iCandidateId, int iEvaluatorId, int iUserIdEvaluator)
         {
             Result result = new Result();
-            Mapper mapper = new Mapper();
-            EvaluationBLL evalBLL = new EvaluationBLL();
 
             // this will return all list of all the users in the database
-            result = evalBLL.GetQuestionsAndResults(iUserIdEvaluator, iCandidateId, iEvaluatorId);
+            result = _evaluation.GetQuestionsAndResults(iUserIdEvaluator, iCandidateId, iEvaluatorId);
 
             // map it
             QuestionModelList model = new QuestionModelList();
-            model.ListOfQuestionModel = mapper.QuestionListToQuestionModelList(result.ListOfQuestionResult);
+            model.ListOfQuestionModel = _mapper.QuestionListToQuestionModelList(result.ListOfQuestionResult);
 
             return View(model);
         }
@@ -50,11 +67,9 @@
         public ActionResult EditEvaluation(QuestionModelList iQuestionModelList)
         {
             Result result = new Result();
-            Mapper mapper = new Mapper();
-            EvaluationBLL evalBLL = new EvaluationBLL();
 
-            List<Question> listOfQuestions = mapper.ListOfQuestionModelToListofQuestion(iQuestionModelList.ListOfQuestionModel);
-            result = evalBLL.UpdateCandidateCapstoneScore(listOfQuestions);
+            List<Question> listOfQuestions = _mapper.ListOfQuestionModelToListofQuestion(iQuestionModelList.ListOfQuestionModel);
+            result = _evaluation.UpdateCandidateCapstoneScore(listOfQuestions);
 
 
             // need to set the success or failure in model
@@ -66,6 +81,6 @@
 
 
 
-
     }
+    
 }

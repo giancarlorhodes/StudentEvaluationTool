@@ -10,10 +10,12 @@
 
         public Result result = new Result();
         private IDbConnection _connection;
+        private ExceptionHandling _exceptionHandling;
 
         public UserDAL(IDbConnection connection)
         {
             this._connection = connection;
+            this._exceptionHandling = new ExceptionHandling();
         }
 
 
@@ -40,6 +42,10 @@
                     parameter.ParameterName = "@parmUserId";
                     parameter.Value = iUserId;
                     command.Parameters.Add(parameter);
+
+
+                    // open connection
+                    _connection.Open();
 
                     // reader loop
                     using (IDataReader reader = command.ExecuteReader())
@@ -90,19 +96,21 @@
                     }
 
                     result.ListOfUsers = listOfUsers;
+                    _connection.Close();
                 }
             }
             catch (Exception ex)
             {
+                _connection.Close();
                 result.ResultMessage = "";
 
-                ExceptionHandling exceptionHandling = new ExceptionHandling();
-
                 // log to file
-                exceptionHandling.WriteExceptionToFile(ex);
+                _exceptionHandling.WriteExceptionToFile(ex);
 
                 // log to database
-                exceptionHandling.WriteExceptionToDatabase(ex);
+                _exceptionHandling.WriteExceptionToDatabase(ex);
+
+                throw;
             }
 
             return result;
@@ -137,6 +145,10 @@
                     parmRoleId.Value = iRoleId;
                     command.Parameters.Add(parmRoleId);
 
+
+                    // open connection
+                    _connection.Open();
+
                     // reader loop
                     using (IDataReader reader = command.ExecuteReader())
                     {
@@ -167,20 +179,21 @@
                 }
 
                 result.ListOfCandidates = listOfCandidates;
-
+                // close connection
+                _connection.Close();
 
             }
             catch (Exception ex)
             {
                 result.ResultMessage = "";
 
-                ExceptionHandling exceptionHandling = new ExceptionHandling();
-
                 // log to file
-                exceptionHandling.WriteExceptionToFile(ex);
+                _exceptionHandling.WriteExceptionToFile(ex);
 
                 // log to database
-                exceptionHandling.WriteExceptionToDatabase(ex);
+                _exceptionHandling.WriteExceptionToDatabase(ex);
+
+                throw;
             }
 
             return result;
@@ -190,6 +203,9 @@
         {
             try
             {
+                // open the connection
+                this._connection.Open();
+
                 using (IDbCommand command = this._connection.CreateCommand())
                 {
 
@@ -220,20 +236,27 @@
                     result.ResultMessage = "User role updated.";
                 }
 
+                // close connection
+                _connection.Close();
+
             }
             catch (Exception ex)
             {
-                ExceptionHandling exceptionHandling = new ExceptionHandling();
 
+                // close connection
+                _connection.Close();
+              
                 // log to file
-                exceptionHandling.WriteExceptionToFile(ex);
+                _exceptionHandling.WriteExceptionToFile(ex);
 
                 // log to database
-                exceptionHandling.WriteExceptionToDatabase(ex);
+                _exceptionHandling.WriteExceptionToDatabase(ex);
 
 
                 result.ResultType = ResultType.Failure;
                 result.ResultMessage = "Did not update user role.";
+
+                throw;
             }
 
             return result;

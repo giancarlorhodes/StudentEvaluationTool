@@ -10,15 +10,22 @@ namespace StudentEvaluationToolDAL
 {
     public class ContextDAL
     {
+		// fields
+		private IDbConnection _connection;
+		private ExceptionHandling _exceptionHandling;
+
+		// properties
+		public IDbConnection Connection { get => _connection; }
+
+		// constructors
+		public ContextDAL(IDbConnection inConnection)
+		{
+			this._connection = inConnection; 
+		}
+
 
 		#region General Context (connection and dispose stuff)
 		//connection to Database stuff like dispose and checkconnection
-		//SqlConnection _con = new SqlConnection();
-
-		public ContextDAL(IDbConnection iDbConnection)
-		{
-			iDbConnection = new SqlConnection();
-		}
 
 		//public void Dispose()
 		//{

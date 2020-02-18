@@ -4,17 +4,25 @@
     using StudentEvaluationToolDAL;
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Linq;
 
-    public class RegistrationBLL
+    public class RegistrationBLL : DbContextBLL
     {
+        // fields
+        private RegistrationDAL _registrationDAL { get; set; }
+
+        // constructor - base will be called first, then the subtype
+        public RegistrationBLL(IDbConnection inConnection) 
+        {
+            _registrationDAL = new RegistrationDAL(inConnection);         
+        }
 
         public Result Register(User user)
         {
-
             // pass thru code
             Result result = new Result();
-            RegistrationDAL registrationDAL = new RegistrationDAL();
+            //RegistrationDAL registrationDAL = new RegistrationDAL();
 
             // hash and salt the password
             Guid guid = Guid.NewGuid();
@@ -23,7 +31,7 @@
             user.Password = hashedPassword;
             user.Salt = guid.ToString();
 
-            result = registrationDAL.CreateNewUser(user);
+            result = _registrationDAL.CreateNewUser(user);
             return result;
         }
 
@@ -32,11 +40,11 @@
 
             // pass thru code
             Result result = new Result();
-            RegistrationDAL registrationDAL = new RegistrationDAL();
+          
 
 
             // this is all the users            
-            result = registrationDAL.LoginAttempt(user);
+            result = _registrationDAL.LoginAttempt(user);
 
            
             // fitler by username and get the salt back
@@ -55,7 +63,8 @@
                 if (hashedPasswordWithSalt == filteredUserTemp.Password)
                 {
                     // username and password is verified
-                    var tempList = result.ListOfUsers.Where(u => u.Username == user.Username && u.Password == hashedPasswordWithSalt).ToList();
+                    var tempList = result.ListOfUsers.Where(u => u.Username == user.Username 
+                                                && u.Password == hashedPasswordWithSalt).ToList();
                     result.ListOfUsers = tempList;
                     result.ResultType = ResultType.Success;
                 }

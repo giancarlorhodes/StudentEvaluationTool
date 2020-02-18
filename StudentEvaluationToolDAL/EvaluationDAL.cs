@@ -9,79 +9,100 @@ using System.Threading.Tasks;
 
 namespace StudentEvaluationToolDAL
 {
-    public class EvaluationDAL
+    public class EvaluationDAL : ContextDAL
     {
 
 
         public Result result = new Result();
-        public string DbConnection = System.Configuration.ConfigurationManager.
-            ConnectionStrings["DbConnection"].ConnectionString;
+        private ExceptionHandling _exceptionHandling;
 
+        public EvaluationDAL(IDbConnection inConnection) : base(inConnection)
+        {
+            this._exceptionHandling = new ExceptionHandling();
+        }
 
-        public Result GetCandidatesResult(int iUserIdEvaluator, int iCandidateId = 0, int iEvaluatorId = 0)
+        public Result GetCandidatesResult(int iUserIdEvaluator, int inCandidateId = 0, int inEvaluatorId = 0)
         {
             List<Question> listOfQuestions = new List<Question>();
 
             try
             {
-                // establish the connection 
-                using (SqlConnection conn = new SqlConnection(DbConnection))
-                {
-                    // create the command
-                    using (SqlCommand command = new SqlCommand("sp_GetCandidatesResults", conn))
+                // open the connection
+                base.Connection.Open();
+
+                // create the command
+                using (IDbCommand _command = base.Connection.CreateCommand())
                     {
-                        command.CommandType = System.Data.CommandType.StoredProcedure;
-                        command.CommandTimeout = 30;
+                        _command.CommandType = System.Data.CommandType.StoredProcedure;
+                        _command.CommandTimeout = 30;
+                        _command.CommandText = "sp_GetCandidatesResults";
 
-                        // do some work to call the stored procedure for adding
-                        command.Parameters.AddWithValue("@parmCapstoneCandidateId", SqlDbType.Int).Value = iCandidateId; // this cause sp to return all row
-                        command.Parameters.AddWithValue("@parmCapstoneEvaluatorId", SqlDbType.Int).Value = iEvaluatorId; 
+                        //// do some work to call the stored procedure for adding
+                        //command.Parameters.AddWithValue("@parmCapstoneCandidateId", SqlDbType.Int).Value = iCandidateId; // this cause sp to return all row
+                        //command.Parameters.AddWithValue("@parmCapstoneEvaluatorId", SqlDbType.Int).Value = iEvaluatorId; 
 
-                        conn.Open();
+
+                        IDbDataParameter _parmCapstoneCandidateId = _command.CreateParameter();
+                        _parmCapstoneCandidateId.DbType = DbType.Int32;
+                        _parmCapstoneCandidateId.ParameterName = "@parmCapstoneCandidateId";
+                        _parmCapstoneCandidateId.Value = inCandidateId;
+                        _command.Parameters.Add(_parmCapstoneCandidateId);
+
+                        IDbDataParameter _parmCapstoneEvaluatorId = _command.CreateParameter();
+                        _parmCapstoneEvaluatorId.DbType = DbType.Int32;
+                        _parmCapstoneEvaluatorId.ParameterName = "@parmCapstoneEvaluatorId";
+                        _parmCapstoneEvaluatorId.Value = inEvaluatorId;
+                        _command.Parameters.Add(_parmCapstoneEvaluatorId);
+
 
                         // reader loop
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            // loop thru the resultset and create object and add to list
-                            while (reader.Read())
+                        using (IDataReader reader = _command.ExecuteReader())
                             {
-                                Question tempQuestion = new Question();
-                                tempQuestion.EvalName = reader["EvalName"].ToString();
-                                tempQuestion.LMSGroupName = reader["LMSGroupName"].ToString();
-                                tempQuestion.CapstoneCandidateId = (int)reader["CapstoneCandidateId"];
-                                tempQuestion.CandidateName = reader["CandidateName"].ToString();
-                                tempQuestion.QuestionNumber = (int)reader["QuestionNumber"];
-                                tempQuestion.QuestionText = reader["Question"].ToString();
-                                tempQuestion.TypeShort = reader["TypeShort"].ToString();
-                                tempQuestion.RangeMin = (int)reader["RangeMin"];
-                                tempQuestion.RangeMax = (int)reader["RangeMax"];
-                                tempQuestion.CapstoneEvaluationResultId = (int)reader["CapstoneEvaluationResultId"];
-                                tempQuestion.ResultValue = reader["ResultValue"] != DBNull.Value ? (int)reader["ResultValue"] : 0; // could be null
-                                tempQuestion.UserIdEvaluator = reader["UserIdEvaluator"] != DBNull.Value ? (int)reader["UserIdEvaluator"] : 0; // could be null;
-                                tempQuestion.CapstoneEvaluatorId = (int)reader["CapstoneEvaluatorId"];
-                                tempQuestion.EvaluatorName = reader["EvaluatorName"].ToString();
-                                tempQuestion.JobTitle = reader["JobTitle"].ToString();
+                                // loop thru the resultset and create object and add to list
+                                while (reader.Read())
+                                {
+                                    Question tempQuestion = new Question();
+                                    tempQuestion.EvalName = reader["EvalName"].ToString();
+                                    tempQuestion.LMSGroupName = reader["LMSGroupName"].ToString();
+                                    tempQuestion.CapstoneCandidateId = (int)reader["CapstoneCandidateId"];
+                                    tempQuestion.CandidateName = reader["CandidateName"].ToString();
+                                    tempQuestion.QuestionNumber = (int)reader["QuestionNumber"];
+                                    tempQuestion.QuestionText = reader["Question"].ToString();
+                                    tempQuestion.TypeShort = reader["TypeShort"].ToString();
+                                    tempQuestion.RangeMin = (int)reader["RangeMin"];
+                                    tempQuestion.RangeMax = (int)reader["RangeMax"];
+                                    tempQuestion.CapstoneEvaluationResultId = (int)reader["CapstoneEvaluationResultId"];
+                                    tempQuestion.ResultValue = reader["ResultValue"] != DBNull.Value ? (int)reader["ResultValue"] : 0; // could be null
+                                    tempQuestion.UserIdEvaluator = reader["UserIdEvaluator"] != DBNull.Value ? (int)reader["UserIdEvaluator"] : 0; // could be null;
+                                    tempQuestion.CapstoneEvaluatorId = (int)reader["CapstoneEvaluatorId"];
+                                    tempQuestion.EvaluatorName = reader["EvaluatorName"].ToString();
+                                    tempQuestion.JobTitle = reader["JobTitle"].ToString();
 
-                                // add to list
-                                listOfQuestions.Add(tempQuestion);
+                                    // add to list
+                                    listOfQuestions.Add(tempQuestion);
+                                }
+                           
                             }
-                            result.ListOfQuestionResult = listOfQuestions;
-                        }
                     }
-                    // close connection
-                    conn.Close();
-                
-                }
+
+
+                // close connection
+                base.Connection.Close();
+                result.ListOfQuestionResult = listOfQuestions;
+
+
             }
             catch (Exception ex)
             {
-                ExceptionHandling exceptionHandling = new ExceptionHandling();
+
+                // close connection
+                base.Connection.Close();
 
                 // log to file
-                exceptionHandling.WriteExceptionToFile(ex);
+                _exceptionHandling.WriteExceptionToFile(ex);
 
                 // log to database
-                exceptionHandling.WriteExceptionToDatabase(ex);
+                _exceptionHandling.WriteExceptionToDatabase(ex);
             }
             return result;
         }
@@ -91,51 +112,63 @@ namespace StudentEvaluationToolDAL
             try
             {
 
-                // write all my database code here
-                // establish the connection 
-                using (SqlConnection conn = new SqlConnection(DbConnection))
+                // open the connection
+                base.Connection.Open();
+
+                foreach (Question question in iListOfQuestions)
                 {
-                    // open the connection once before the loop
-                    conn.Open();
-                    
-                    foreach (Question question in iListOfQuestions)
+
+
+                    // create the command
+                    using (IDbCommand _command = base.Connection.CreateCommand())
                     {
-                        // create the command
-                        using (SqlCommand command = new SqlCommand("sp_UpdateCandidateResult", conn))
-                        {
-                            command.CommandType = System.Data.CommandType.StoredProcedure;
-                            command.CommandTimeout = 30;
-             
-                            // do some work to call the stored procedure for adding
-                            command.Parameters.AddWithValue("@parmCapstoneEvaluationResultId", SqlDbType.Int).Value = question.CapstoneEvaluationResultId;
-                            command.Parameters.AddWithValue("@parmResultValue", SqlDbType.Int).Value = question.ResultValue;
-                           
-                            // call the non query to execute the stored procedure
-                            command.ExecuteNonQuery();
-                        }
+                        _command.CommandType = System.Data.CommandType.StoredProcedure;
+                        _command.CommandTimeout = 30;
+                        _command.CommandText = "sp_UpdateCandidateResult";
 
+                        // do some work to call the stored procedure for adding
+                        //_command.Parameters.AddWithValue("@parmCapstoneEvaluationResultId", SqlDbType.Int).Value = question.CapstoneEvaluationResultId;
+                        //_command.Parameters.AddWithValue("@parmResultValue", SqlDbType.Int).Value = question.ResultValue;
+
+                        IDbDataParameter _parmCapstoneEvaluationResultId = _command.CreateParameter();
+                        _parmCapstoneEvaluationResultId.DbType = DbType.Int32;
+                        _parmCapstoneEvaluationResultId.ParameterName = "@parmCapstoneEvaluationResultId";
+                        _parmCapstoneEvaluationResultId.Value = question.CapstoneEvaluationResultId;
+                        _command.Parameters.Add(_parmCapstoneEvaluationResultId);
+
+                        IDbDataParameter _parmResultValue = _command.CreateParameter();
+                        _parmResultValue.DbType = DbType.Int32;
+                        _parmResultValue.ParameterName = "@parmResultValue";
+                        _parmResultValue.Value = question.ResultValue;
+                        _command.Parameters.Add(_parmResultValue);
+
+                        // call the non query to execute the stored procedure
+                        _command.ExecuteNonQuery();
                     }
-                    
-                    result.ResultType = ResultType.Success;
-                    result.ResultMessage = "Scores updated successful.";
-
-                    // close connection
-                    conn.Close();
                 }
+                    
+                // close connection
+                base.Connection.Close();
+                result.ResultType = ResultType.Success;
+                result.ResultMessage = "Scores updated successful.";
+
             }
             catch (Exception ex)
             {
-                ExceptionHandling exceptionHandling = new ExceptionHandling();
+                // close connection
+                base.Connection.Close();
 
                 // log to file
-                exceptionHandling.WriteExceptionToFile(ex);
+                _exceptionHandling.WriteExceptionToFile(ex);
 
                 // log to database
-                exceptionHandling.WriteExceptionToDatabase(ex);
+                _exceptionHandling.WriteExceptionToDatabase(ex);
 
 
                 result.ResultType = ResultType.Failure;
                 result.ResultMessage = "Scores update failed.";
+
+                throw;
             }
 
             return result;

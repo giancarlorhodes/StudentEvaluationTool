@@ -17,8 +17,20 @@
     /// Company:        Onshore Outsourcing
     /// Description:    Using the register process    
     /// </summary>
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
+        // fields
+        private RegistrationBLL _registration;
+        private Mapper _mapper;
+
+
+        // constructor
+        public HomeController() 
+        {
+            // create BLL object for registration process
+            _registration = new RegistrationBLL(base.Connection);
+            _mapper = new Mapper();        
+        }
 
         [HttpGet]      
         public ActionResult Index()
@@ -52,17 +64,14 @@
             if (ModelState.IsValid)
             {
 
-                // need a mapper to go from UserModel to User (from common library)
-                Mapper mapper = new Mapper();
-
                 // create the user object that will receive the mapped object
-                StudentEvaluationToolCommon.User user = new StudentEvaluationToolCommon.User();
-                user = mapper.UserModelToCommonUser(userModel);
+                User user = new User();
 
-                // create BLL object for registration process
-                RegistrationBLL registration = new RegistrationBLL();
+                // need a mapper to go from UserModel to User (from common library)
+                user = _mapper.UserModelToCommonUser(userModel);
+
                 // passed the mapped 
-                Result result = registration.Register(user);
+                Result result = _registration.Register(user);
                 userModel.DialogMessageType = result.ResultType.ToString();
                 userModel.DialogMessage = result.ResultMessage;
 
@@ -99,17 +108,11 @@
 
             // TODO: need to dialog messsage for user or password incorrect.
 
-            // need a mapper to go from UserModel to User (from common library)
-            Mapper mapper = new Mapper();
-
             // create the user object that will receive the mapped object
-            StudentEvaluationToolCommon.User user = new StudentEvaluationToolCommon.User();
-            user = mapper.UserModelToCommonUser(userModel);
+            User _user = _mapper.UserModelToCommonUser(userModel);
 
-            // create BLL object for registration process
-            RegistrationBLL login = new RegistrationBLL();
             // passed the mapped 
-            Result result = login.Login(user);
+            Result result = _registration.Login(_user);
 
 
             if (result.ListOfUsers.Count == 1)

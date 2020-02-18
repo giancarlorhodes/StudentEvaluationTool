@@ -13,8 +13,22 @@
     using System.Web;
     using System.Web.Mvc;
 
-    public class DashboardController : Controller
+    public class DashboardController : BaseController
     {
+
+
+        // fields
+        private Mapper _mapper;
+        private UserBLL _userBLL;
+
+        public DashboardController() 
+        {
+
+            _mapper = new Mapper();
+            _userBLL = new UserBLL(base.Connection);
+
+        }
+
         // GET: Dashboard
         [MustBeLoggedIn]
         public ActionResult Index()
@@ -31,14 +45,13 @@
          
             // TODO: receive the candidate list and then filter if the user is a employee or evaluator, admin see all candidates
             Result result = new Result();
-            Mapper mapper = new Mapper();
-            UserBLL userBLL = new UserBLL();
+          
 
             // fetch by userid
             int iUserId = ((UserModel)Session["UserSession"]).UserID;
             int iRoleId = ((UserModel)Session["UserSession"]).RoleID;
-            result = userBLL.FetchCandidates(iUserId, iRoleId);
-            candidateModel = mapper.CandidateListToCandidateModelList(result.ListOfCandidates);
+            result = _userBLL.FetchCandidates(iUserId, iRoleId);
+            candidateModel = _mapper.CandidateListToCandidateModelList(result.ListOfCandidates);
 
             return View(candidateModel);
            
@@ -49,9 +62,8 @@
         [MustBeInRole(Roles = "Administrator")]
         public ActionResult Users()
         {
-            Result result = new Result();
-            Mapper mapper = new Mapper();
-            UserBLL userBLL = new UserBLL();
+            Result result = new Result();       
+
 
             // TODO: need to fetch from the database
             // this is just an hard coded example of how to pass a list to a view
@@ -61,10 +73,10 @@
             //list.Add(new UserModel { UserID = 300, FirstName = "John", LastName = "Evan", Username = "John29", RoleID = 2, RoleName="Evaluator", Password="password123" });
 
             // this will return all list of all the users in the database
-            result = userBLL.FetchUsers(0);
+            result = _userBLL.FetchUsers(0);
 
             // maps the list from User to UserModel
-            List<UserModel> userModelsList = mapper.UserListToUserModelList(result.ListOfUsers);
+            List<UserModel> userModelsList = _mapper.UserListToUserModelList(result.ListOfUsers);
 
             return View(userModelsList);
         }
@@ -84,16 +96,14 @@
 
                 ChangeRoleModel model = new ChangeRoleModel();
                 Result result = new Result();
-                Mapper mapper = new Mapper();
-                UserBLL userBLL = new UserBLL();
 
                 // this will return all list of all the users in the database
-                result = userBLL.FetchUsers(iUserId);
+                result = _userBLL.FetchUsers(iUserId);
 
 
                 // maps the list from User to UserModel
                 // should only contain one and only one user
-                model = mapper.UserToChangeModel(result.ListOfUsers[0]);
+                model = _mapper.UserToChangeModel(result.ListOfUsers[0]);
 
 
                 return View(model);
@@ -122,12 +132,9 @@
 
             ChangeRoleModel model = new ChangeRoleModel();
             Result result = new Result();
-            Mapper mapper = new Mapper();
-            UserBLL userBLL = new UserBLL();
 
             // update the role
-            result = userBLL.UpdateRole(mapper.ChangeModelToCommonUser(iChangeRoleModel));
-
+            result = _userBLL.UpdateRole(_mapper.ChangeModelToCommonUser(iChangeRoleModel));
 
             // update the roles
             iChangeRoleModel.UserRoles = Utility.GetRoles();

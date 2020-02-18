@@ -2,45 +2,37 @@
 {
     using StudentEvaluationToolCommon;
     using StudentEvaluationToolDAL;
+    using System.Data;
 
     public class UserBLL : DbContextBLL
     {
-        public UserDAL UserDAL { get; set; }
+
+        // fields
+        private UserDAL _userDAL { get; set; }
        
-        // constructor - base will be called first, then the subtype
-        public UserBLL() : base() 
+        // constructors
+        public UserBLL(IDbConnection inConnection)
         {
-            UserDAL = new UserDAL(base.Connection);
-            base.Connection.Open();
+            this._userDAL = new UserDAL(inConnection); 
         }
         
-
         public Result FetchUsers(int iUserId)
         {
-            Result result = UserDAL.GetUserFromTheDatabase(iUserId);
+            Result result = _userDAL.GetUserFromTheDatabase(iUserId);
             return result;
         }
-
-      
-
+     
         public Result UpdateRole(User user)
         {
-            Result result = UserDAL.UpdateRoleInTheDatabase(user);
+            Result result = _userDAL.UpdateRoleInTheDatabase(user);
             return result;
         }
 
         public Result FetchCandidates(int iUserId, int iRoleId)
         {
-            Result result = UserDAL.GetCandidatesFromTheDatabase(iUserId, iRoleId);
+            Result result = _userDAL.GetCandidatesFromTheDatabase(iUserId, iRoleId);
             return result;
         }
-
-        // destructor
-        ~UserBLL() 
-        {
-           base. Connection.Close();
-        }
-
-
+     
     }
 }

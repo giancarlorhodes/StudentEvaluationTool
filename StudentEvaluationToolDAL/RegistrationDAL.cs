@@ -4,77 +4,85 @@
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using System.Data.SqlClient;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
-    public class RegistrationDAL
+    public class RegistrationDAL : ContextDAL
     {
 
         public Result result = new Result();     
-        public string DbConnection = System.Configuration.ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString;
+        //private IDbConnection _connection;
+        private ExceptionHandling _exceptionHandling;
 
+        public RegistrationDAL(IDbConnection inConnection) : base(inConnection)
+        { 
+            this._exceptionHandling = new ExceptionHandling();
+        }
 
-        public Result CreateNewUser(User user)
+        public Result CreateNewUser(User inUser)
         {
-
 
             try
             {
-                // write all my database code here
-                // establish the connection 
-                using (SqlConnection conn = new SqlConnection(DbConnection))
+                // open the connection
+                base.Connection.Open();
+
+                using (IDbCommand _command = base.Connection.CreateCommand())
                 {
-                    // create the command
-                    using (SqlCommand command = new SqlCommand("sp_CreateNewUser", conn))
-                    {
-                        command.CommandType = System.Data.CommandType.StoredProcedure;
-                        command.CommandTimeout = 30;
-                        conn.Open();
+               
+                    _command.CommandType = System.Data.CommandType.StoredProcedure;
+                    _command.CommandTimeout = 30;
+                    _command.CommandText = "sp_CreateNewUser";
 
-                        // do some work to call the stored procedure for adding
-                        command.Parameters.AddWithValue("@parmFirstName", SqlDbType.VarChar).Value = user.FirstName;
-                        command.Parameters.AddWithValue("@parmLastName", SqlDbType.VarChar).Value = user.LastName;
-                        command.Parameters.AddWithValue("@parmUsername", SqlDbType.VarChar).Value = user.Username;
-                        command.Parameters.AddWithValue("@parmPassword", SqlDbType.VarChar).Value = user.Password;
-                        if (string.IsNullOrEmpty(user.Salt))
-                        {
-                            // default salt
-                            command.Parameters.AddWithValue("@parmSalt", SqlDbType.VarChar).Value = "salt123";
-                        }
-                        else
-                        {
-                            command.Parameters.AddWithValue("@parmSalt", SqlDbType.VarChar).Value = user.Salt;
-                        }
-                        command.Parameters.AddWithValue("@parmEmail", SqlDbType.VarChar).Value = user.Email;
-                        // default is 3 = Employee role
-                        command.Parameters.AddWithValue("@parmRoleId_FK", SqlDbType.Int).Value = 3;
+                    IDbDataParameter _parmFirstName = _command.CreateParameter();
+                    _parmFirstName.DbType = DbType.String;
+                    _parmFirstName.ParameterName = "@parmFirstName";
+                    _parmFirstName.Value = inUser.FirstName;
+                    _command.Parameters.Add(_parmFirstName);
 
-                        // call the non query to execute the stored procedure
-                        command.ExecuteNonQuery();
+                    IDbDataParameter _parmLastName = _command.CreateParameter();
+                    _parmLastName.DbType = DbType.String;
+                    _parmLastName.ParameterName = "@parmLastName";
+                    _parmLastName.Value = inUser.LastName;
+                    _command.Parameters.Add(_parmLastName);
 
-                    }
+                    IDbDataParameter _parmUsername = _command.CreateParameter();
+                    _parmUsername.DbType = DbType.String;
+                    _parmUsername.ParameterName = "@parmUsername";
+                    _parmUsername.Value = inUser.Username;
+                    _command.Parameters.Add(_parmUsername);
+
+                    IDbDataParameter _parmPassword = _command.CreateParameter();
+                    _parmPassword.DbType = DbType.String;
+                    _parmPassword.ParameterName = "@parmPassword";
+                    _parmPassword.Value = inUser.Password;
+                    _command.Parameters.Add(_parmPassword);
+
+                    // call the non query to execute the stored procedure
+                    _command.ExecuteNonQuery();
+                   
                     result.ResultType = ResultType.Success;
                     result.ResultMessage = "User registration completed. Please log in.";
 
                     // close connection
-                    conn.Close();
+                    base.Connection.Close();
+
                 }
             }
             catch (Exception ex)
             {
-                ExceptionHandling exceptionHandling = new ExceptionHandling();
 
+                // close connection
+                base.Connection.Close();
+              
                 // log to file
-                exceptionHandling.WriteExceptionToFile(ex);
+                _exceptionHandling.WriteExceptionToFile(ex);
 
                 // log to database
-                exceptionHandling.WriteExceptionToDatabase(ex);
-
+                _exceptionHandling.WriteExceptionToDatabase(ex);
 
                 result.ResultType = ResultType.Failure;
                 result.ResultMessage = "User registration failed.";
+
+                throw;
             }
 
             return result;
@@ -82,30 +90,29 @@
 
 
         public Result LoginAttempt(User user)
-        {
-   
+        {   
             List<User> listOfUsers = new List<User>();
       
             try
             {
+                // open the connection
+                base.Connection.Open();
 
-                // establish the connection 
-                using (SqlConnection conn = new SqlConnection(DbConnection))
+                // create the command
+                using (IDbCommand command = base.Connection.CreateCommand())
                 {
-                    // create the command
-                    using (SqlCommand command = new SqlCommand("sp_GetAllUsers", conn))
-                    {
-                        command.CommandType = System.Data.CommandType.StoredProcedure;
-                        command.CommandTimeout = 30;
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.CommandTimeout = 30;
+                    command.CommandText = "sp_GetAllUsers";
 
+                    IDbDataParameter _parmUserId = command.CreateParameter();
+                    _parmUserId.DbType = DbType.Int32;
+                    _parmUserId.ParameterName = "@parmUserId";
+                    _parmUserId.Value = 0; // this zero will cause sp to return all users
+                    command.Parameters.Add(_parmUserId);
 
-                        // do some work to call the stored procedure for adding
-                        command.Parameters.AddWithValue("@parmUserId", SqlDbType.Int).Value = 0; // this cause sp to return all users
-
-                        conn.Open();
-
-                        // reader loop
-                        using (SqlDataReader reader = command.ExecuteReader())
+                    // reader loop
+                    using (IDataReader reader = command.ExecuteReader())
                         {
                             // loop thru the resultset and create object and add to list
                             while (reader.Read())
@@ -120,30 +127,39 @@
                                 userTemp.Salt = reader["Salt"].ToString();
                                 userTemp.RoleID = (int)reader["RoleId_FK"];
                                 userTemp.RoleName = reader["RoleName"].ToString();
+
                                 // add to list
                                 listOfUsers.Add(userTemp);
                             }
                         }
                     }
+
                     // close connection
-                    conn.Close();
+                    base.Connection.Close();
                     result.ListOfUsers = listOfUsers;
-                }
+                    result.ResultType = ResultType.Success;
+                    result.ResultMessage = "Method: LoginAttempt succeeded.";
 
             }
             catch (Exception ex)
             {
-                ExceptionHandling exceptionHandling = new ExceptionHandling();
+
+                // close connection
+                base.Connection.Close();
+                result.ResultType = ResultType.Failure;
+                result.ResultMessage = "Method: LoginAttempt failed.";
 
                 // log to file
-                exceptionHandling.WriteExceptionToFile(ex);
+                this._exceptionHandling.WriteExceptionToFile(ex);
 
                 // log to database
-                exceptionHandling.WriteExceptionToDatabase(ex);
+                this._exceptionHandling.WriteExceptionToDatabase(ex);
+
+                throw;
             }
 
             return result;
-
         }
+
     }
 }
